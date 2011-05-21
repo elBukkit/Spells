@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0
+
+ - Try to get this working with latest Persistence.
+
 ## 0.991
 
  - Yes, I'm doing that with the version numbers until 1.0 :P

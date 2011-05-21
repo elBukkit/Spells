@@ -3,7 +3,7 @@ package com.elmakers.mine.bukkit.plugins.spells.builtin;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-import com.elmakers.mine.bukkit.gameplay.dao.BlockList;
+import com.elmakers.mine.bukkit.persistence.dao.BlockList;
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 
@@ -45,7 +45,7 @@ public class DisintegrateSpell extends Spell
 	}
 
 	@Override
-	protected String getName()
+	public String getName()
 	{
 		return "disintegrate";
 	}

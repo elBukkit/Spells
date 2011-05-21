@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
-import com.elmakers.mine.bukkit.gameplay.dao.BlockList;
+import com.elmakers.mine.bukkit.persistence.dao.BlockList;
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 
@@ -29,7 +29,7 @@ public class ConstructSpell extends Spell
 		addVariant("sandblast", Material.SANDSTONE, getCategory(), "Create a blob of sand to drop on an enemy", "cuboid 4 with sand");
 	}
 	
-	enum ConstructionType
+	public enum ConstructionType
 	{
 		SPHERE,
 		CUBOID,

@@ -6,11 +6,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
-import com.elmakers.mine.bukkit.gameplay.BlockRecurse;
-import com.elmakers.mine.bukkit.gameplay.ReplaceMaterialAction;
-import com.elmakers.mine.bukkit.gameplay.dao.BlockList;
+import com.elmakers.mine.bukkit.persistence.dao.BlockList;
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
+import com.elmakers.mine.bukkit.utilities.BlockRecurse;
+import com.elmakers.mine.bukkit.utilities.ReplaceMaterialAction;
 
 public class FillSpell extends Spell 
 {

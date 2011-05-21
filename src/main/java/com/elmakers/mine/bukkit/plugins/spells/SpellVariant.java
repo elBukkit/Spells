@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import com.elmakers.mine.bukkit.persistence.dao.PlayerData;
-import com.elmakers.mine.craftbukkit.persistence.Persistence;
 
 public class SpellVariant implements Comparable<SpellVariant>
 {
@@ -104,7 +103,7 @@ public class SpellVariant implements Comparable<SpellVariant>
 	public boolean hasSpellPermission(Player player)
 	{
 		if (player == null) return false;
-		PlayerData playerData = Persistence.getInstance().get(player.getName(), PlayerData.class);
+		PlayerData playerData = spell.getPersistence().get(player.getName(), PlayerData.class);
 		if (playerData == null) return false;
 		return playerData.isSet(getPermissionNode());
 	}

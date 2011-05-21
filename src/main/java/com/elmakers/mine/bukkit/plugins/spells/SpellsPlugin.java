@@ -16,11 +16,10 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.elmakers.mine.bukkit.persisted.Persistence;
 import com.elmakers.mine.bukkit.persistence.dao.PluginCommand;
-import com.elmakers.mine.bukkit.plugins.nether.NetherGatePlugin;
 import com.elmakers.mine.bukkit.plugins.persistence.PersistencePlugin;
 import com.elmakers.mine.bukkit.utilities.PluginUtilities;
-import com.elmakers.mine.craftbukkit.persistence.Persistence;
 
 public class SpellsPlugin extends JavaPlugin
 {	
@@ -43,6 +42,7 @@ public class SpellsPlugin extends JavaPlugin
 	    {
 	    	PersistencePlugin plugin = (PersistencePlugin)checkForPersistence;
 	    	persistence = plugin.getPersistence();
+	    	utilities = plugin.createUtilities(this);
 	    } 
 	    else 
 	    {
@@ -55,13 +55,13 @@ public class SpellsPlugin extends JavaPlugin
 		
         PluginManager pm = getServer().getPluginManager();
 		
-        pm.registerEvent(Type.PLAYER_ITEM, playerListener, Priority.Normal, this);
+        pm.registerEvent(Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
         pm.registerEvent(Type.PLAYER_ANIMATION, playerListener, Priority.Normal, this);
         pm.registerEvent(Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
         pm.registerEvent(Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
         
         pm.registerEvent(Type.ENTITY_DEATH, entityListener, Priority.Normal, this);   
-        pm.registerEvent(Type.ENTITY_DAMAGED, entityListener, Priority.Normal, this);
+        pm.registerEvent(Type.ENTITY_DAMAGE, entityListener, Priority.Normal, this);
          
         PluginDescriptionFile pdfFile = this.getDescription();
         log.info(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled");
@@ -69,10 +69,6 @@ public class SpellsPlugin extends JavaPlugin
 	
 	protected void initialize()
 	{
-		utilities = persistence.getUtilities(this);
-
-		bindNetherGatePlugin();
-
 		spells.initialize(this, persistence, utilities);
 
 		playerListener.setSpells(spells);
@@ -235,18 +231,6 @@ public class SpellsPlugin extends JavaPlugin
 	public void onDisable() 
 	{
 		spells.clear();
-	}
-	
-	protected void bindNetherGatePlugin() 
-	{
-		Plugin checkForNether = this.getServer().getPluginManager().getPlugin("NetherGate");
-
-	    if (checkForNether != null) 
-	    {
-	    	log.info("Spells: found NetherGate! Thanks for using my plugins :)");
-	    	NetherGatePlugin plugin = (NetherGatePlugin)checkForNether;
-	    	spells.setNether(plugin.getManager());
-	    }
 	}
 
 	/*

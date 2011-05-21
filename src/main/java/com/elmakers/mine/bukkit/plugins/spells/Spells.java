@@ -9,22 +9,49 @@ import java.util.logging.Logger;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
-import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.elmakers.mine.bukkit.gameplay.dao.BlockList;
-import com.elmakers.mine.bukkit.plugins.nether.NetherManager;
-import com.elmakers.mine.bukkit.plugins.spells.builtin.*;
+import com.elmakers.mine.bukkit.persisted.Persistence;
+import com.elmakers.mine.bukkit.persistence.dao.BlockList;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.AbsorbSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.AlterSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.ArrowSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.BlastSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.BlinkSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.BridgeSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.ConstructSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.CushionSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.DisintegrateSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.FamiliarSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.FillSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.FireSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.FireballSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.FrostSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.GillsSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.HealSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.InvincibleSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.LavaSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.ManifestSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.MineSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.PeekSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.PillarSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.RecallSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.TorchSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.TransmuteSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.TreeSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.TunnelSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.UndoSpell;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.UndoQueue;
 import com.elmakers.mine.bukkit.utilities.PluginUtilities;
-import com.elmakers.mine.craftbukkit.persistence.Persistence;
 
 public class Spells
 {
@@ -101,7 +128,7 @@ public class Spells
 		}
 		
 		spells.add(spell);
-		spell.initialize(this, utilities);
+		spell.initialize(this, utilities, persistence);
 	}
 	
 	/*
@@ -503,7 +530,7 @@ public class Spells
 	 * Listeners / callbacks
 	 */
 
-	public void onPlayerQuit(PlayerEvent event)
+	public void onPlayerQuit(PlayerQuitEvent event)
 	{
 		// Must allow listeners to remove themselves during the event!
 		List<Spell> active = new ArrayList<Spell>();
@@ -590,19 +617,17 @@ public class Spells
      * 
      * @param event Relevant event details
      */
-    public void onPlayerItem(PlayerItemEvent event) 
+    public void onPlayerInteract(PlayerInteractEvent event) 
     {
-    	ItemStack item = event.getPlayer().getInventory().getItemInHand();
-    	if (item != null && item.getTypeId() == getWandTypeId())
+    	if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
     	{
-    		cancel(event.getPlayer());
+	    	ItemStack item = event.getPlayer().getInventory().getItemInHand();
+	    	if (item != null && item.getTypeId() == getWandTypeId())
+	    	{
+	    		cancel(event.getPlayer());
+	    	}
     	}
     }
-    
-	public void setNether(NetherManager nether)
-	{
-		this.nether = nether;
-	}
 	
 	protected void addBuiltinSpells()
 	{
@@ -639,14 +664,6 @@ public class Spells
 		// addSpell(new TowerSpell());
 		// addSpell(new ExtendSpell());
 		// addSpell(new StairsSpell());
-		
-		// NetherGate spells
-		if (nether != null)
-		{
-			addSpell(new PortalSpell(nether));
-			addSpell(new PhaseSpell(nether));
-			addSpell(new WindowSpell(nether));
-		}
 	}
 	
 	public boolean isInvincible(Player player)
@@ -708,7 +725,6 @@ public class Spells
 
 
 	private SpellsPlugin plugin = null;
-	private NetherManager nether = null;
 	
 	protected Persistence persistence = null;
 	protected PluginUtilities utilities = null;

@@ -4,8 +4,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
-import com.elmakers.mine.bukkit.gameplay.dao.BlockData;
-import com.elmakers.mine.bukkit.gameplay.dao.BlockList;
+import com.elmakers.mine.bukkit.persistence.dao.BlockData;
+import com.elmakers.mine.bukkit.persistence.dao.BlockList;
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
 
 public class TransmuteSpell extends Spell

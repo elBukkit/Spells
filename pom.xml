@@ -11,7 +11,7 @@
 		</dependencies>
 	</dependencyManagement>
 	<properties>
-		<build.version>0.991</build.version>
+		<build.version>1.0</build.version>
 	</properties>
 	<repositories>
 		<repository>
@@ -42,23 +42,39 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.elmakers.mine.bukkit.plugins.nether</groupId>
-			<artifactId>nethergate</artifactId>
+			<groupId>com.elmakers.mine.bukkit.persistence</groupId>
+			<artifactId>Persistence</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.elmakers.mine.bukkit.plugins.persistence</groupId>
-			<artifactId>Persistence</artifactId>
+			<artifactId>PersistencePlugin</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.elmakers.mine.bukkit.plugins.gameplay</groupId>
-			<artifactId>Gameplay</artifactId>
+			<groupId>com.elmakers.mine.bukkit.persistence.dao</groupId>
+			<artifactId>Globals</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<type>jar</type>
-			<scope>compile</scope>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.elmakers.mine.bukkit.utilities</groupId>
+			<artifactId>Utilities</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.elmakers.mine.bukkit.persistence.dao</groupId>
+			<artifactId>Globals</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>

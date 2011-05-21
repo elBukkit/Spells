@@ -1,10 +1,10 @@
 package com.elmakers.mine.bukkit.plugins.spells;
 
 import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 class SpellsPlayerListener extends PlayerListener 
 {
@@ -42,13 +42,13 @@ class SpellsPlayerListener extends PlayerListener
      * 
      * @param event Relevant event details
      */
-    public void onPlayerItem(PlayerItemEvent event) 
+    public void onPlayerInteract(PlayerInteractEvent event) 
     {
-    	master.onPlayerItem(event);
+    	master.onPlayerInteract(event);
     }
 
 	@Override
-	public void onPlayerQuit(PlayerEvent event)
+	public void onPlayerQuit(PlayerQuitEvent event)
 	{
 		master.onPlayerQuit(event);
 	}

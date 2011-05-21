@@ -4,7 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import com.elmakers.mine.bukkit.gameplay.dao.BlockList;
+import com.elmakers.mine.bukkit.persistence.dao.BlockList;
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 
@@ -141,7 +141,7 @@ public class FireSpell extends Spell
 	}
 
 	@Override
-	protected String getName()
+	public String getName()
 	{
 		return "fire";
 	}

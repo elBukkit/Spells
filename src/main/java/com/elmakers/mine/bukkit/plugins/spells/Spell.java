@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import org.bukkit.World;
 
+import com.elmakers.mine.bukkit.persisted.Persistence;
 import com.elmakers.mine.bukkit.persistence.dao.PlayerData;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 import com.elmakers.mine.bukkit.utilities.PluginUtilities;
-import com.elmakers.mine.craftbukkit.persistence.Persistence;
 
 /**
  * 
@@ -58,7 +58,7 @@ public abstract class Spell implements Comparable<Spell>
 	 * 
 	 * @return The name of this spell
 	 */
-	protected abstract String getName();
+	public abstract String getName();
 
 	/**
 	 * You must specify a category for this spell.
@@ -140,7 +140,7 @@ public abstract class Spell implements Comparable<Spell>
 	 * @param event The player who just quit
 	 * @see Spells#registerEvent(SpellEventType, Spell)
 	 */
-	public void onPlayerQuit(PlayerEvent event)
+	public void onPlayerQuit(PlayerQuitEvent event)
 	{
 
 	}
@@ -754,10 +754,11 @@ public abstract class Spell implements Comparable<Spell>
 	 * 
 	 * @param instance The spells instance
 	 */
-	public void initialize(Spells instance, PluginUtilities utilities)
+	public void initialize(Spells instance, PluginUtilities utilities, Persistence persistence)
 	{
 		this.utilities = utilities;
 		this.spells = instance;
+		this.persistence = persistence;
 	}
 	
 	/**
@@ -854,7 +855,7 @@ public abstract class Spell implements Comparable<Spell>
 	public boolean hasSpellPermission(Player player)
 	{
 		if (player == null) return false;
-		PlayerData playerData = Persistence.getInstance().get(player.getName(), PlayerData.class);
+		PlayerData playerData = persistence.get(player.getName(), PlayerData.class);
 		if (playerData == null) return false;
 		return playerData.isSet(getPermissionNode());
 	}
@@ -921,6 +922,11 @@ public abstract class Spell implements Comparable<Spell>
 		return true;
 	}
 	
+	public Persistence getPersistence()
+	{
+		return persistence;
+	}
+	
 	/*
 	 * private data
 	 */
@@ -943,4 +949,5 @@ public abstract class Spell implements Comparable<Spell>
 	private final List<SpellVariant>			variants				= new ArrayList<SpellVariant>();
 
 	protected PluginUtilities					utilities				= null;
+	protected Persistence						persistence				= null;
 }

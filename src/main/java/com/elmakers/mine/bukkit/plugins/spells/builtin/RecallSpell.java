@@ -155,7 +155,7 @@ public class RecallSpell extends Spell
 	}
 
 	@Override
-	protected String getName()
+	public String getName()
 	{
 		return "recall";
 	}

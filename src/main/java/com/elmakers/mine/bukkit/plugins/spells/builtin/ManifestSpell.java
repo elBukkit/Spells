@@ -46,7 +46,7 @@ public class ManifestSpell extends Spell
 	}
 
 	@Override
-	protected String getName()
+	public String getName()
 	{
 		return "manifest";
 	}

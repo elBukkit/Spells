@@ -6,7 +6,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-import com.elmakers.mine.bukkit.gameplay.dao.BlockList;
+import com.elmakers.mine.bukkit.persistence.dao.BlockList;
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 
@@ -130,7 +130,7 @@ public class PeekSpell extends Spell
 	}
 
 	@Override
-	protected String getName()
+	public String getName()
 	{
 		return "peek";
 	}
