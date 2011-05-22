@@ -49,6 +49,7 @@ import com.elmakers.mine.bukkit.plugins.spells.builtin.TransmuteSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.TreeSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.TunnelSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.UndoSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.WolfSpell;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.UndoQueue;
 import com.elmakers.mine.bukkit.utilities.PluginUtilities;
@@ -659,6 +660,7 @@ public class Spells
 		addSpell(new LavaSpell());
 		addSpell(new InvincibleSpell());
 		addSpell(new TunnelSpell());
+		addSpell(new WolfSpell());
 		
 		// wip
 		// addSpell(new TowerSpell());

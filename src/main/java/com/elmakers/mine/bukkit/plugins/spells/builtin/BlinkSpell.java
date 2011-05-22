@@ -39,7 +39,7 @@ public class BlinkSpell extends Spell
 		if (location != null) 
 		{
 			castMessage(player, "You ascend");
-			player.teleportTo(location);
+			player.teleport(location);
 			return true;
 		}
 		return false;
@@ -51,7 +51,7 @@ public class BlinkSpell extends Spell
 		if (location != null) 
 		{
 			castMessage(player, "You descend");
-			player.teleportTo(location);
+			player.teleport(location);
 			return true;
 		}
 		return false;
@@ -195,18 +195,17 @@ public class BlinkSpell extends Spell
 			return false;
 		}
 		castMessage(player, "Blink!");
-		player.teleportTo
+		Location targetLocation = new Location
 		(
-			new org.bukkit.Location
-			(
-				world,
-				destination.getX() + 0.5,
-				destination.getY(),
-				destination.getZ() + 0.5,
-				player.getLocation().getYaw(),
-				player.getLocation().getPitch()
-			)
+			world,
+			destination.getX() + 0.5,
+			destination.getY(),
+			destination.getZ() + 0.5,
+			player.getLocation().getYaw(),
+			player.getLocation().getPitch()
 		);
+		player.teleport(targetLocation);
+		
 		return true;
 	}
 	

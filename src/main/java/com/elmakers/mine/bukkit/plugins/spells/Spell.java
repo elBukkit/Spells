@@ -258,12 +258,13 @@ public abstract class Spell implements Comparable<Spell>
 	 */
 	public boolean isOkToStandIn(Material mat)
 	{
-		return (mat == Material.AIR || mat == Material.WATER || mat == Material.STATIONARY_WATER);
+		return (mat == Material.AIR || mat == Material.WATER || mat == Material.STATIONARY_WATER || mat == Material.SNOW);
 	}
 
 	public boolean isOkToStandOn(Material mat)
 	{
-		return (mat != Material.AIR && mat != Material.LAVA && mat != Material.STATIONARY_LAVA);
+		// Added snow here to avoid blink bounciness
+		return (mat != Material.AIR && mat != Material.LAVA && mat != Material.STATIONARY_LAVA && mat != Material.SNOW);
 	}
 	
 	public Location findPlaceToStand(Location playerLoc, boolean goUp)

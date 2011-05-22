@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.01
+
+ - Add back in the "wolf" spell.
+
 ## 1.0
 
  - Try to get this working with latest Persistence.

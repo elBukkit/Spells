@@ -45,7 +45,7 @@ public class RecallSpell extends Spell
 		if (parameters.length > 0 && parameters[0].equalsIgnoreCase("spawn"))
 		{
 			castMessage(player, "Returning you home");
-			player.teleportTo(player.getWorld().getSpawnLocation());
+			player.teleport(player.getWorld().getSpawnLocation());
 			return true;
 		}
 		
@@ -56,7 +56,7 @@ public class RecallSpell extends Spell
 			if (marker == null || !marker.isActive && otherSpellHasPermission("spawn") && autoSpawn)
 			{
 				castMessage(player, "Returning you home");
-				player.teleportTo(player.getWorld().getSpawnLocation());
+				player.teleport(player.getWorld().getSpawnLocation());
 			}
 			else
 			{
@@ -67,12 +67,12 @@ public class RecallSpell extends Spell
 				if (distance < disableDistance && otherSpellHasPermission("spawn") && autoSpawn)
 				{
 					castMessage(player, "Returning you home");
-					player.teleportTo(player.getWorld().getSpawnLocation());
+					player.teleport(player.getWorld().getSpawnLocation());
 				}
 				else
 				{
 					castMessage(player, "Returning you to your marker");
-					player.teleportTo(marker.location);
+					player.teleport(marker.location);
 				}
 			}
 			return true;

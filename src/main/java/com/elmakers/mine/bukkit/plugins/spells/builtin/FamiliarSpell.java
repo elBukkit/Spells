@@ -5,28 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.server.EntityChicken;
-import net.minecraft.server.EntityCow;
-import net.minecraft.server.EntityCreeper;
-import net.minecraft.server.EntityGhast;
-import net.minecraft.server.EntityGiantZombie;
-import net.minecraft.server.EntityLiving;
-import net.minecraft.server.EntityPig;
-import net.minecraft.server.EntityPigZombie;
-import net.minecraft.server.EntitySheep;
-import net.minecraft.server.EntitySkeleton;
-import net.minecraft.server.EntitySpider;
-import net.minecraft.server.EntitySquid;
-import net.minecraft.server.EntityZombie;
-import net.minecraft.server.World;
-
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.player.PlayerEvent;
 
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
 import com.elmakers.mine.bukkit.plugins.spells.SpellEventType;
@@ -34,7 +18,7 @@ import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 
 public class FamiliarSpell extends Spell
 {
-	private String DEFAULT_FAMILIARS = "chicken,sheep,cow,pig";
+	private String DEFAULT_FAMILIARS = "chicken,sheep,cow,pig,wolf";
 	private String DEFAULT_MONSTERS = "creeper,pigzombie,skeleton,spider,squid,zombie,ghast,giant";
 	
 	private List<String> defaultFamiliars = new ArrayList<String>();
@@ -42,16 +26,16 @@ public class FamiliarSpell extends Spell
 	private final Random rand = new Random();
 	private HashMap<String, PlayerFamiliar> familiars = new HashMap<String, PlayerFamiliar>();
 	
-	class PlayerFamiliar
+	public class PlayerFamiliar
 	{
-		public EntityLiving familiar = null;
+		public LivingEntity familiar = null;
 		
 		public boolean hasFamiliar()
 		{
 			return familiar != null;
 		}
 		
-		public void setFamiliar(EntityLiving f)
+		public void setFamiliar(LivingEntity f)
 		{
 			familiar = f;
 		}
@@ -60,13 +44,13 @@ public class FamiliarSpell extends Spell
 		{
 			if (familiar != null)
 			{
-				familiar.health = 0;
+				familiar.setHealth(0);
 				familiar = null;
 			}
 		}
 	}
 	
-	enum FamiliarType
+	public enum FamiliarType
 	{
 		CHICKEN,
 		SHEEP,
@@ -80,6 +64,7 @@ public class FamiliarSpell extends Spell
 		ZOMBIE,
 		GHAST,
 		GIANT,
+		WOLF,
 		//FISH,
 		//SLIME,
 		UNKNOWN;
@@ -163,7 +148,7 @@ public class FamiliarSpell extends Spell
 				famType = FamiliarType.SQUID;
 			}
 			
-			EntityLiving entity =  spawnFamiliar(target, famType);
+			LivingEntity entity =  spawnFamiliar(target, famType);
 			if (entity == null)
 			{
 				sendMessage(player, "Your familiar is DOA");
@@ -176,37 +161,28 @@ public class FamiliarSpell extends Spell
 		}
 	}
 		
-	protected EntityLiving spawnFamiliar(Block target, FamiliarType famType)
+	protected LivingEntity spawnFamiliar(Block target, FamiliarType famType)
 	{
-		Location location = new Location(player.getWorld(), target.getX(), target.getY(), target.getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
-		EntityLiving e = null;
-		CraftPlayer craftPlayer = (CraftPlayer)player;
-		CraftWorld craftWorld = (CraftWorld)craftPlayer.getWorld();
-		World world = craftWorld.getHandle();
+		LivingEntity e = null;
 		
+		/// ARRRGGG!
 		switch (famType)
 		{
-			case SHEEP: e = new EntitySheep(world); break;
-			case PIG: e = new EntityPig(world); break;
-			case CHICKEN: e = new EntityChicken(world); break;
-			case COW: e = new EntityCow(world); break;
-			case CREEPER: e = new EntityCreeper(world); break;
-			case PIGZOMBIE: e = new EntityPigZombie(world); break;
-			case SKELETON: e = new EntitySkeleton(world); break;
-			case SPIDER: e = new EntitySpider(world); break;
-			case SQUID: e = new EntitySquid(world); break;
-			case GHAST: e = new EntityGhast(world); break;
-			case ZOMBIE: e = new EntityZombie(world); break;
-			case GIANT: e = new EntityGiantZombie(world); break;
-			//case SLIME: e = new EntitySlime(world); break;
-			//case FISH: e = new EntityFish(world); break;
+			case CHICKEN: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.CHICKEN); break;
+			case SHEEP: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.SHEEP); break;
+			case COW: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.COW); break;
+			case PIG: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.PIG); break;
+			case CREEPER: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.CREEPER); break;
+			case PIGZOMBIE: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.PIG_ZOMBIE); break;
+			case SKELETON: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.SKELETON); break;
+			case SPIDER: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.SPIDER); break;
+			case SQUID: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.SQUID); break;
+			case ZOMBIE: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.ZOMBIE); break;
+			case GHAST: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.GHAST); break;
+			case GIANT: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.GIANT); break;
+			case WOLF: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.WOLF); break;
 		}
 		
-		if (e != null)
-		{
-			e.c(location.getX(), location.getY(), location.getZ(), location.getYaw(), 0.0F);
-	        world.a(e);
-		}
 		return e;
 	}
 
@@ -268,7 +244,7 @@ public class FamiliarSpell extends Spell
 		defaultMonsters = properties.getStringList("spells-familiar-monsters", DEFAULT_MONSTERS);
 	}
 	
-	public void onPlayerQuit(PlayerQuitEvent event)
+	public void onPlayerQuit(PlayerEvent event)
 	{
 		PlayerFamiliar fam = getFamiliar(event.getPlayer().getName());
 		if (fam.hasFamiliar())
