@@ -150,6 +150,8 @@ public class RecallSpell extends Spell
 		PlayerMarker marker = new PlayerMarker(location);
 		markers.put(player.getName(), marker);
 	
+		player.setCompassTarget(location);
+		
 		targetBlock.setType(markerMaterial);
 		return true;
 	}

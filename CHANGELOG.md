@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.02
+
+ - Tame target wolves!
+
 ## 1.01
 
  - Add back in the "wolf" spell.

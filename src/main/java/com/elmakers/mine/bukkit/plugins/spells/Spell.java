@@ -1,6 +1,7 @@
 package com.elmakers.mine.bukkit.plugins.spells;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -32,6 +34,28 @@ import com.elmakers.mine.bukkit.utilities.PluginUtilities;
  */
 public abstract class Spell implements Comparable<Spell>
 {	
+	public class EntityScore implements Comparable<EntityScore>
+	{
+		private Entity	entity;
+		private int		score;
+		
+		public EntityScore(Entity entity, int score)
+		{
+			this.entity = entity;
+			this.score = score;
+		}
+		
+		public int compareTo(EntityScore other) 
+		{
+			return this.score - other.score;
+		}
+		
+		public Entity getEntity()
+		{
+			return entity;
+		}
+	}
+	
 	/*
 	 * protected members that are helpful to use
 	 */
@@ -110,7 +134,6 @@ public abstract class Spell implements Comparable<Spell>
 	{
 
 	}
-	
 
 	/**
 	 * Listener method, called on player move for registered spells.
@@ -521,6 +544,38 @@ public abstract class Spell implements Comparable<Spell>
 	{
 		findTargetBlock();
 		return getCurBlock();
+	}
+	
+	public Entity getTargetEntity(Class<? extends Entity> typeOf)
+	{
+		List<Entity> entities = player.getWorld().getEntities();
+		List<EntityScore> scored = new ArrayList<EntityScore>();
+		Vector playerFacing = player.getLocation().getDirection();
+		Vector playerLoc = new Vector(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ());
+		for (Entity entity : entities)
+		{
+			if (typeOf != null && !(typeOf.isAssignableFrom(entity.getClass())))
+			{
+				continue;
+			}
+			Vector entityLoc = new Vector(entity.getLocation().getBlockX(), entity.getLocation().getBlockY(), entity.getLocation().getBlockZ());
+			Vector entityDirection = new Vector(entityLoc.getBlockX() - playerLoc.getBlockX(), entityLoc.getBlockY() - playerLoc.getBlockY(), entityLoc.getBlockZ() - playerLoc.getBlockZ());
+			double angleDistance = entityDirection.angle(playerFacing);
+			if (angleDistance > entityMaxAngle) continue;
+			
+			double distance = entityDirection.length();
+			if (distance > 100) distance = 100;
+			if (distance > entityMaxDistance) continue;
+			
+			int score = (int)((100 - distance) + (3 - angleDistance) * 10);
+			EntityScore newScore = new EntityScore(entity, score);
+			scored.add(newScore);
+		}
+		
+		if (scored.size() <= 0) return null;
+		Collections.sort(scored);
+		
+		return scored.get(0).getEntity();
 	}
 
 	/**
@@ -948,6 +1003,9 @@ public abstract class Spell implements Comparable<Spell>
 	private final HashMap<Material, Boolean>	targetThroughMaterials	= new HashMap<Material, Boolean>();
 	private boolean								reverseTargeting		= false;
 	private final List<SpellVariant>			variants				= new ArrayList<SpellVariant>();
+	
+	protected int								entityMaxDistance		= 20;
+	protected double							entityMaxAngle			= 0.3;
 
 	protected PluginUtilities					utilities				= null;
 	protected Persistence						persistence				= null;
