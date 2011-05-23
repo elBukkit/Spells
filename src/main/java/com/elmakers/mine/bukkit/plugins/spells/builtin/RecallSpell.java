@@ -15,7 +15,7 @@ import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 
 public class RecallSpell extends Spell
 {
-	class PlayerMarker
+	public class PlayerMarker
 	{
 		public Location location;
 		public boolean isActive;

@@ -2,6 +2,8 @@ package com.elmakers.mine.bukkit.plugins.spells.builtin;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 
 import com.elmakers.mine.bukkit.persistence.dao.BlockList;
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
@@ -14,6 +16,18 @@ public class DisintegrateSpell extends Spell
 	@Override
 	public boolean onCast(String[] parameters)
 	{
+	    Entity targetEntity = getTargetEntity();
+	    if (targetEntity != null)
+	    {
+	        if (targetEntity instanceof LivingEntity)
+	        {
+	            LivingEntity li = (LivingEntity)targetEntity;
+	            li.damage(1);
+	            castMessage(player, "ZOT!");
+	            return true;
+	        }
+	    }
+	    
 		Block target = getTargetBlock();
 		if (target == null)
 		{

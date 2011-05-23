@@ -3,8 +3,10 @@ package com.elmakers.mine.bukkit.plugins.spells.builtin;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
 import com.elmakers.mine.bukkit.persistence.dao.BlockList;
@@ -20,6 +22,7 @@ public class ConstructSpell extends Spell
 	private int				defaultRadius			= 2;
 	private int				maxRadius				= 32;
 	private int				defaultSearchDistance	= 32;
+    private String          targetType              = "block";
 	
 	public ConstructSpell()
 	{
@@ -54,20 +57,32 @@ public class ConstructSpell extends Spell
 	{
 		setMaxRange(defaultSearchDistance, true);
 		targetThrough(Material.GLASS);
-		Block target = getTargetBlock();
-		if (target == null)
+		Block target = null;
+		Entity targetEntity = getTargetEntity();
+		if (targetEntity != null)
 		{
-			initializeTargeting(player);
-			noTargetThrough(Material.GLASS);
-			target = getTargetBlock();
-			if (target == null)
-			{
-				castMessage(player, "No target");
-				return false;
-			}
+		    Location targetLocation = targetEntity.getLocation();
+		    target = targetLocation.getBlock();
+		    targetType = targetEntity.getClass().getName().toLowerCase();
+		}
+		else
+		{
+		    targetType = "block";
+		    target = getTargetBlock();
+		    if (target == null)
+		    {
+	            initializeTargeting(player);
+	            noTargetThrough(Material.GLASS);
+	            target = getTargetBlock();
+	        }
 		}
 		
-		
+        if (target == null)
+        {
+            castMessage(player, "No target");
+            return false;
+        }
+    	 		
 		Material material = target.getType();
 		byte data = target.getData();
 		

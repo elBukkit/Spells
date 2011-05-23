@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -26,26 +27,37 @@ public class FamiliarSpell extends Spell
 	private final Random rand = new Random();
 	private HashMap<String, PlayerFamiliar> familiars = new HashMap<String, PlayerFamiliar>();
 	
+	public enum FamiliarClass
+	{
+	    SPECIFIC,
+	    ANY,
+	    FRIENDLY,
+	    MONSTER
+	}
+	
 	public class PlayerFamiliar
 	{
-		public LivingEntity familiar = null;
+		public List<LivingEntity> familiars = null;
 		
 		public boolean hasFamiliar()
 		{
-			return familiar != null;
+			return familiars != null;
 		}
 		
-		public void setFamiliar(LivingEntity f)
+		public void setFamiliars(List<LivingEntity> f)
 		{
-			familiar = f;
+		    familiars = f;
 		}
 		
 		public void releaseFamiliar()
 		{
-			if (familiar != null)
+			if (familiars != null)
 			{
-				familiar.setHealth(0);
-				familiar = null;
+			    for (LivingEntity familiar : familiars)
+			    {
+			        familiar.setHealth(0);
+			    }
+				familiars = null;
 			}
 		}
 	}
@@ -92,6 +104,7 @@ public class FamiliarSpell extends Spell
 	public FamiliarSpell()
 	{
 		addVariant("monster", Material.PUMPKIN, "combat", "Call a monster to your side", "monster");
+		addVariant("mob", Material.JACK_O_LANTERN, "combat", "Call a monster to your side", "monster 20");
 	}
 	
 	@Override
@@ -101,7 +114,7 @@ public class FamiliarSpell extends Spell
 		if (fam.hasFamiliar())
 		{
 			fam.releaseFamiliar();
-			castMessage(player, "You release your familiar");
+			castMessage(player, "You release your familiar(s)");
 			checkListener();
 			return true;
 		}
@@ -119,28 +132,31 @@ public class FamiliarSpell extends Spell
 			target = target.getFace(BlockFace.UP);
 			
 			FamiliarType famType = FamiliarType.UNKNOWN;
-			if (parameters.length > 0)
+			FamiliarClass famClass = FamiliarClass.FRIENDLY;
+			int famCount = 1;
+			for (String parameter : parameters)
 			{
-				if (parameters[0].equalsIgnoreCase("any"))
-				{
-					int randomFamiliar = rand.nextInt(FamiliarType.values().length - 1);
-					famType = FamiliarType.values()[randomFamiliar];
-				}
-				else if (parameters[0].equalsIgnoreCase("monster"))
-				{
-					int randomFamiliar = rand.nextInt(defaultMonsters.size());
-					famType = FamiliarType.parseString(defaultMonsters.get(randomFamiliar));
-				}
-				else
-				{
-					famType = FamiliarType.parseString(parameters[0]);
-				}
-			}
-			
-			if (famType == FamiliarType.UNKNOWN)
-			{
-				int randomFamiliar = rand.nextInt(defaultFamiliars.size());
-				famType = FamiliarType.parseString(defaultFamiliars.get(randomFamiliar));
+			    try
+			    {
+			        famCount = Integer.parseInt(parameter);
+			    }
+			    catch (NumberFormatException e)
+			    {
+			        famCount = 1;
+			        if (parameter.equalsIgnoreCase("any"))
+	                {
+	                    famClass = FamiliarClass.ANY;
+	                }
+	                else if (parameter.equalsIgnoreCase("monster"))
+	                {
+	                    famClass = FamiliarClass.MONSTER;
+	                }
+	                else
+	                {
+	                    famType = FamiliarType.parseString(parameters[0]);
+	                    famClass = FamiliarClass.SPECIFIC;
+	                }
+			    }	
 			}
 			
 			if (target.getType() == Material.WATER || target.getType() == Material.STATIONARY_WATER)
@@ -148,39 +164,79 @@ public class FamiliarSpell extends Spell
 				famType = FamiliarType.SQUID;
 			}
 			
-			LivingEntity entity =  spawnFamiliar(target, famType);
-			if (entity == null)
+			List<LivingEntity> familiars = new ArrayList<LivingEntity>();
+			int spawnCount = 0;
+			for (int i = 0; i < famCount; i++)
 			{
-				sendMessage(player, "Your familiar is DOA");
-				return false;
+                if (famClass != FamiliarClass.SPECIFIC)
+                {
+                    if (famClass == FamiliarClass.ANY)
+                    {
+                        int randomFamiliar = rand.nextInt(FamiliarType.values().length - 1);
+                        famType = FamiliarType.values()[randomFamiliar];                        
+                    }
+                    else
+                    {
+                        List<String> types = defaultFamiliars;
+                        if (famClass == FamiliarClass.MONSTER)
+                        {
+                            types = defaultMonsters;
+                        }
+                        int randomFamiliar = rand.nextInt(types.size());
+                        famType = FamiliarType.parseString(types.get(randomFamiliar));
+                    }
+                }      
+
+			    Location targetLoc = target.getLocation();
+			    if (famCount > 1)
+			    {
+			        targetLoc.setX(targetLoc.getX() + rand.nextInt(2 * famCount) - famCount);
+			        targetLoc.setZ(targetLoc.getZ() + rand.nextInt(2 * famCount) - famCount);
+			    }
+			    LivingEntity entity =  spawnFamiliar(targetLoc, famType);
+			    if (entity != null)
+			    {
+			        familiars.add(entity);
+			        spawnCount++;
+			    }
 			}
-			castMessage(player, "You create a " + famType.name().toLowerCase() + " familiar!");
-			fam.setFamiliar(entity);
+			
+			String typeMessage = "";
+			if (famClass == FamiliarClass.SPECIFIC)
+			{
+			    typeMessage = " " + famType.name().toLowerCase();
+			}
+			else if (famClass != FamiliarClass.ANY)
+			{
+			    typeMessage = " " + famClass.name().toLowerCase();
+			}
+			castMessage(player, "You create " + famCount + typeMessage +" familiar(s)!");
+			fam.setFamiliars(familiars);
 			checkListener();
 			return true;
 		}
 	}
 		
-	protected LivingEntity spawnFamiliar(Block target, FamiliarType famType)
+	protected LivingEntity spawnFamiliar(Location target, FamiliarType famType)
 	{
 		LivingEntity e = null;
 		
 		/// ARRRGGG!
 		switch (famType)
 		{
-			case CHICKEN: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.CHICKEN); break;
-			case SHEEP: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.SHEEP); break;
-			case COW: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.COW); break;
-			case PIG: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.PIG); break;
-			case CREEPER: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.CREEPER); break;
-			case PIGZOMBIE: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.PIG_ZOMBIE); break;
-			case SKELETON: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.SKELETON); break;
-			case SPIDER: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.SPIDER); break;
-			case SQUID: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.SQUID); break;
-			case ZOMBIE: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.ZOMBIE); break;
-			case GHAST: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.GHAST); break;
-			case GIANT: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.GIANT); break;
-			case WOLF: e = player.getWorld().spawnCreature(target.getLocation(), CreatureType.WOLF); break;
+			case CHICKEN: e = player.getWorld().spawnCreature(target, CreatureType.CHICKEN); break;
+			case SHEEP: e = player.getWorld().spawnCreature(target, CreatureType.SHEEP); break;
+			case COW: e = player.getWorld().spawnCreature(target, CreatureType.COW); break;
+			case PIG: e = player.getWorld().spawnCreature(target, CreatureType.PIG); break;
+			case CREEPER: e = player.getWorld().spawnCreature(target, CreatureType.CREEPER); break;
+			case PIGZOMBIE: e = player.getWorld().spawnCreature(target, CreatureType.PIG_ZOMBIE); break;
+			case SKELETON: e = player.getWorld().spawnCreature(target, CreatureType.SKELETON); break;
+			case SPIDER: e = player.getWorld().spawnCreature(target, CreatureType.SPIDER); break;
+			case SQUID: e = player.getWorld().spawnCreature(target, CreatureType.SQUID); break;
+			case ZOMBIE: e = player.getWorld().spawnCreature(target, CreatureType.ZOMBIE); break;
+			case GHAST: e = player.getWorld().spawnCreature(target, CreatureType.GHAST); break;
+			case GIANT: e = player.getWorld().spawnCreature(target, CreatureType.GIANT); break;
+			case WOLF: e = player.getWorld().spawnCreature(target, CreatureType.WOLF); break;
 		}
 		
 		return e;

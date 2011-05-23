@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.elmakers.mine.bukkit.persisted.Persistence;
 import com.elmakers.mine.bukkit.persistence.dao.BlockList;
+import com.elmakers.mine.bukkit.plugins.nether.NetherManager;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.AbsorbSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.AlterSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.ArrowSpell;
@@ -39,6 +40,7 @@ import com.elmakers.mine.bukkit.plugins.spells.builtin.GillsSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.HealSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.InvincibleSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.LavaSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.LightningSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.ManifestSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.MineSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.PeekSpell;
@@ -49,7 +51,11 @@ import com.elmakers.mine.bukkit.plugins.spells.builtin.TransmuteSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.TreeSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.TunnelSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.UndoSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.WeatherSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.WolfSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.nether.PhaseSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.nether.PortalSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.nether.WindowSpell;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.UndoQueue;
 import com.elmakers.mine.bukkit.utilities.PluginUtilities;
@@ -661,11 +667,21 @@ public class Spells
 		addSpell(new InvincibleSpell());
 		addSpell(new TunnelSpell());
 		addSpell(new WolfSpell());
+        addSpell(new WeatherSpell());
+        addSpell(new LightningSpell());
 		
 		// wip
 		// addSpell(new TowerSpell());
 		// addSpell(new ExtendSpell());
 		// addSpell(new StairsSpell());
+        
+        // NetherGate spells
+        if (nether != null)
+        {
+            addSpell(new PortalSpell(nether));
+            addSpell(new PhaseSpell(nether));
+            addSpell(new WindowSpell(nether));
+        }
 	}
 	
 	public boolean isInvincible(Player player)
@@ -684,6 +700,11 @@ public class Spells
 		invinciblePlayers.put(player.getName(), invincible);
 	}
 	
+	public void setNether(NetherManager nether)
+    {
+        this.nether = nether;
+    }
+	
 	/*
 	 * Private data
 	 */
@@ -691,6 +712,8 @@ public class Spells
 	
 	private final String wandPropertiesFile = "wand.properties";
 	private int wandTypeId = 280;
+	
+	private NetherManager nether = null;
 	
 	static final String		DEFAULT_BUILDING_MATERIALS	= "1,2,3,4,5,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,24,25,35,41,42,43,45,46,47,48,49,56,57,60,65,66,73,74,79,80,81,82,83,85,86,87,88,89,90,91";
 	static final String		STICKY_MATERIALS = "37,38,39,50,51,55,59,63,64,65,66,68,70,71,72,75,76,77,78,83";

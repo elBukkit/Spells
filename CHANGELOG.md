@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 1.05
+
+ - Bring back NG integration
+
+## 1.04
+
+ - Fix filling with air!
+ - Add count parameter to "familiar", add "mob" variant
+ - Make disintegrate and construct target other entities.
+ - Fix score function in entity targeting, only target living entities
+
+## 1.03
+ 
+ - Add weather and lightning spells, modify fireball.
+
 ## 1.02
 
  - Tame target wolves!

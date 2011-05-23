@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.elmakers.mine.bukkit.persisted.Persistence;
 import com.elmakers.mine.bukkit.persistence.dao.PluginCommand;
+import com.elmakers.mine.bukkit.plugins.nether.NetherGatePlugin;
 import com.elmakers.mine.bukkit.plugins.persistence.PersistencePlugin;
 import com.elmakers.mine.bukkit.utilities.PluginUtilities;
 
@@ -50,7 +51,8 @@ public class SpellsPlugin extends JavaPlugin
 	    	this.getServer().getPluginManager().disablePlugin(this);
 	    	return;
 	    }
-	    
+
+        bindNetherGatePlugin();
 	    initialize();
 		
         PluginManager pm = getServer().getPluginManager();
@@ -232,6 +234,18 @@ public class SpellsPlugin extends JavaPlugin
 	{
 		spells.clear();
 	}
+	
+	protected void bindNetherGatePlugin() 
+    {
+        Plugin checkForNether = this.getServer().getPluginManager().getPlugin("NetherGate");
+
+        if (checkForNether != null) 
+        {
+            log.info("Spells: found NetherGate! Thanks for using my plugins :)");
+            NetherGatePlugin plugin = (NetherGatePlugin)checkForNether;
+            spells.setNether(plugin.getManager());
+        }
+    }
 
 	/*
 	 * Private data

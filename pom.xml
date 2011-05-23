@@ -11,7 +11,7 @@
 		</dependencies>
 	</dependencyManagement>
 	<properties>
-		<build.version>1.02</build.version>
+		<build.version>1.05</build.version>
 	</properties>
 	<repositories>
 		<repository>
@@ -24,13 +24,6 @@
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>minecraft-server</artifactId>
-			<version>1.2_01_02</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
@@ -74,6 +67,12 @@
 			<artifactId>Globals</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.elmakers.mine.bukkit.plugins.nether</groupId>
+			<artifactId>NetherGate</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -47,7 +48,7 @@ public abstract class Spell implements Comparable<Spell>
 		
 		public int compareTo(EntityScore other) 
 		{
-			return this.score - other.score;
+			return other.score - this.score;
 		}
 		
 		public Entity getEntity()
@@ -224,7 +225,7 @@ public abstract class Spell implements Comparable<Spell>
 		
 		for (int i = 8; i >= 0; i--)
 		{
-			if (contents[i] == null) break;
+			if (contents[i] == null) return new ItemStack(Material.AIR);;
 			Material candidate = contents[i].getType();
 			if (buildingMaterials.contains(candidate))
 			{
@@ -546,6 +547,11 @@ public abstract class Spell implements Comparable<Spell>
 		return getCurBlock();
 	}
 	
+	public Entity getTargetEntity()
+	{
+		return getTargetEntity(null);
+	}
+	
 	public Entity getTargetEntity(Class<? extends Entity> typeOf)
 	{
 		List<Entity> entities = player.getWorld().getEntities();
@@ -554,10 +560,10 @@ public abstract class Spell implements Comparable<Spell>
 		Vector playerLoc = new Vector(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ());
 		for (Entity entity : entities)
 		{
-			if (typeOf != null && !(typeOf.isAssignableFrom(entity.getClass())))
-			{
-				continue;
-			}
+            if (entity == player) continue;
+		    if (!(entity instanceof LivingEntity)) continue;
+			if (typeOf != null && !(typeOf.isAssignableFrom(entity.getClass()))) continue;
+			
 			Vector entityLoc = new Vector(entity.getLocation().getBlockX(), entity.getLocation().getBlockY(), entity.getLocation().getBlockZ());
 			Vector entityDirection = new Vector(entityLoc.getBlockX() - playerLoc.getBlockX(), entityLoc.getBlockY() - playerLoc.getBlockY(), entityLoc.getBlockZ() - playerLoc.getBlockZ());
 			double angleDistance = entityDirection.angle(playerFacing);
@@ -1004,7 +1010,7 @@ public abstract class Spell implements Comparable<Spell>
 	private boolean								reverseTargeting		= false;
 	private final List<SpellVariant>			variants				= new ArrayList<SpellVariant>();
 	
-	protected int								entityMaxDistance		= 20;
+	protected int								entityMaxDistance		= 80;
 	protected double							entityMaxAngle			= 0.3;
 
 	protected PluginUtilities					utilities				= null;
