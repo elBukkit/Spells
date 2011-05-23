@@ -5,13 +5,12 @@ import net.minecraft.server.WorldServer;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
+import com.elmakers.mine.bukkit.plugins.spells.Target;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.MathHelper;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.Vec3D;
 
@@ -58,19 +57,14 @@ public class FireballSpell extends Spell {
         		size = defaultSize;
         	}
         }
-		Entity entity = getTargetEntity();
-		if (entity == null)
+		Target target = getTarget();
+		if (!target.hasTarget())
 		{
-			Block targetBlock = getTargetBlock();
-			if (targetBlock == null)
-			{
-				sendMessage(player, "No target");
-				return false;
-			}
-			return createExplosionAt(targetBlock.getLocation(), size);
+		    sendMessage(player, "No target");
+            return false;
 		}
 		
-		return createExplosionAt(entity.getLocation(), size);
+		return createExplosionAt(target.getLocation(), size);
 	}
 
 	@Override

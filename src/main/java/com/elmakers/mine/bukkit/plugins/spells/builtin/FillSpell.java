@@ -94,7 +94,7 @@ public class FillSpell extends Spell
 			return true;
 		}
 		
-		Block target = getTarget();
+		Block target = getPlayerTarget();
 		
 		if (target != null)
 		{			
@@ -163,7 +163,7 @@ public class FillSpell extends Spell
 		}
 	}
 	
-	protected Block getTarget()
+	protected Block getPlayerTarget()
 	{
 		return playerTargets.get(player.getName());
 	}
@@ -176,7 +176,7 @@ public class FillSpell extends Spell
 	@Override
 	public void onCancel()
 	{
-		Block target = getTarget();
+		Block target = getPlayerTarget();
 		if (target != null)
 		{
 			player.sendMessage("Cancelled fill");

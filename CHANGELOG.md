@@ -1,8 +1,13 @@
 # CHANGELOG
 
+## 1.06
+
+ - Entity targeting update, with LOS checks
+
 ## 1.05
 
  - Bring back NG integration
+ - Favor targeting monsters over players (or wolves)
 
 ## 1.04
 

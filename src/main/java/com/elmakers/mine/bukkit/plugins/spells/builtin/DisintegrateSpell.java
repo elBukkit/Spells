@@ -4,9 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import com.elmakers.mine.bukkit.persistence.dao.BlockList;
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
+import com.elmakers.mine.bukkit.plugins.spells.Target;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 
 public class DisintegrateSpell extends Spell
@@ -16,40 +18,49 @@ public class DisintegrateSpell extends Spell
 	@Override
 	public boolean onCast(String[] parameters)
 	{
-	    Entity targetEntity = getTargetEntity();
-	    if (targetEntity != null)
+	    Target target = getTarget();
+	    if (target.isEntity())
 	    {
+	        Entity targetEntity = target.getEntity();
 	        if (targetEntity instanceof LivingEntity)
 	        {
 	            LivingEntity li = (LivingEntity)targetEntity;
-	            li.damage(1);
+	            if (li instanceof Player)
+	            {
+	                li.damage(1);
+	            }
+	            else
+	            {
+	                li.damage(10);
+	            }
 	            castMessage(player, "ZOT!");
 	            return true;
 	        }
 	    }
 	    
-		Block target = getTargetBlock();
-		if (target == null)
+		if (!target.hasTarget())
 		{
 			castMessage(player, "No target");
 			return false;
 		}
-		if (defaultSearchDistance > 0 && getDistance(player, target) > defaultSearchDistance)
+
+		if (defaultSearchDistance > 0 && target.getDistance() > defaultSearchDistance)
 		{
 			castMessage(player, "Can't blast that far away");
 			return false;
 		}
 		
+		Block targetBlock = target.getBlock();
 		BlockList disintigrated = new BlockList();
-		disintigrated.add(target);
+		disintigrated.add(targetBlock);
 		
 		if (isUnderwater())
 		{
-			target.setType(Material.STATIONARY_WATER);
+		    targetBlock.setType(Material.STATIONARY_WATER);
 		}
 		else
 		{
-			target.setType(Material.AIR);
+		    targetBlock.setType(Material.AIR);
 		}
 		
 		spells.addToUndoQueue(player, disintigrated);

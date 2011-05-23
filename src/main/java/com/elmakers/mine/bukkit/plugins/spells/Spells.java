@@ -37,6 +37,7 @@ import com.elmakers.mine.bukkit.plugins.spells.builtin.FireSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.FireballSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.FrostSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.GillsSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.GotoSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.HealSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.InvincibleSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.LavaSpell;
@@ -46,6 +47,7 @@ import com.elmakers.mine.bukkit.plugins.spells.builtin.MineSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.PeekSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.PillarSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.RecallSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.SignSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.TorchSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.TransmuteSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.TreeSpell;
@@ -669,6 +671,8 @@ public class Spells
 		addSpell(new WolfSpell());
         addSpell(new WeatherSpell());
         addSpell(new LightningSpell());
+        addSpell(new GotoSpell());
+        addSpell(new SignSpell());
 		
 		// wip
 		// addSpell(new TowerSpell());

@@ -5,17 +5,19 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
+import com.elmakers.mine.bukkit.plugins.spells.Target;
 
 public class HealSpell extends Spell 
 {
 	@Override
 	public boolean onCast(String[] parameters) 
 	{
-	    Entity target = getTargetEntity();
-	    if (target != null && target instanceof LivingEntity)
+        Target target = getTarget();
+        Entity targetEntity = target.getEntity();
+	    if (targetEntity != null && targetEntity instanceof LivingEntity)
 	    {
 	        castMessage(player, "You heal your target");
-	        ((LivingEntity)target).setHealth(20);
+	        ((LivingEntity)targetEntity).setHealth(20);
 	        return true;    
 	    }
 		castMessage(player, "You heal yourself");

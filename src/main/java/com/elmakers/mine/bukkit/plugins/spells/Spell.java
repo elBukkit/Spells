@@ -34,29 +34,7 @@ import com.elmakers.mine.bukkit.utilities.PluginUtilities;
  *
  */
 public abstract class Spell implements Comparable<Spell>
-{	
-	public class EntityScore implements Comparable<EntityScore>
-	{
-		private Entity	entity;
-		private int		score;
-		
-		public EntityScore(Entity entity, int score)
-		{
-			this.entity = entity;
-			this.score = score;
-		}
-		
-		public int compareTo(EntityScore other) 
-		{
-			return other.score - this.score;
-		}
-		
-		public Entity getEntity()
-		{
-			return entity;
-		}
-	}
-	
+{	    
 	/*
 	 * protected members that are helpful to use
 	 */
@@ -235,6 +213,11 @@ public abstract class Spell implements Comparable<Spell>
 		}
 		
 		return result;
+	}
+	
+	public void targetEntity(Class<? extends Entity> typeOf)
+	{
+	    targetEntityType = typeOf;
 	}
 
 	public void targetThrough(Material mat)
@@ -541,47 +524,43 @@ public abstract class Spell implements Comparable<Spell>
 	 * 
 	 * @return The target block
 	 */
+	public Target getTarget()
+	{
+	    Block block = getTargetBlock();
+	    Target targetBlock = new Target(player, block);
+	    Target targetEntity = getTargetEntity();
+	    if (targetEntity == null || targetBlock.getDistance() < targetEntity.getDistance())
+	    {
+	        return targetBlock;
+	    }
+	    
+	    return targetEntity;
+	}
+	
 	public Block getTargetBlock()
 	{
 		findTargetBlock();
 		return getCurBlock();
 	}
 	
-	public Entity getTargetEntity()
-	{
-		return getTargetEntity(null);
-	}
-	
-	public Entity getTargetEntity(Class<? extends Entity> typeOf)
+	protected Target getTargetEntity()
 	{
 		List<Entity> entities = player.getWorld().getEntities();
-		List<EntityScore> scored = new ArrayList<EntityScore>();
-		Vector playerFacing = player.getLocation().getDirection();
-		Vector playerLoc = new Vector(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ());
+		List<Target> scored = new ArrayList<Target>();
 		for (Entity entity : entities)
 		{
             if (entity == player) continue;
 		    if (!(entity instanceof LivingEntity)) continue;
-			if (typeOf != null && !(typeOf.isAssignableFrom(entity.getClass()))) continue;
+			if (targetEntityType != null && !(targetEntityType.isAssignableFrom(entity.getClass()))) continue;
 			
-			Vector entityLoc = new Vector(entity.getLocation().getBlockX(), entity.getLocation().getBlockY(), entity.getLocation().getBlockZ());
-			Vector entityDirection = new Vector(entityLoc.getBlockX() - playerLoc.getBlockX(), entityLoc.getBlockY() - playerLoc.getBlockY(), entityLoc.getBlockZ() - playerLoc.getBlockZ());
-			double angleDistance = entityDirection.angle(playerFacing);
-			if (angleDistance > entityMaxAngle) continue;
-			
-			double distance = entityDirection.length();
-			if (distance > 100) distance = 100;
-			if (distance > entityMaxDistance) continue;
-			
-			int score = (int)((100 - distance) + (3 - angleDistance) * 10);
-			EntityScore newScore = new EntityScore(entity, score);
+			Target newScore = new Target(player, entity);
 			scored.add(newScore);
 		}
 		
 		if (scored.size() <= 0) return null;
 		Collections.sort(scored);
 		
-		return scored.get(0).getEntity();
+		return scored.get(0);
 	}
 
 	/**
@@ -863,6 +842,7 @@ public abstract class Spell implements Comparable<Spell>
 		playerLocation = player.getLocation();
 		length = 0;
 		targetHeightRequired = 1;
+		targetEntityType = null;
 		xRotation = (playerLocation.getYaw() + 90) % 360;
 		yRotation = playerLocation.getPitch() * -1;
 		reverseTargeting = false;
@@ -1000,6 +980,7 @@ public abstract class Spell implements Comparable<Spell>
 
 	private boolean								targetingComplete;
 	private int									targetHeightRequired	= 1;
+	private Class<? extends Entity>             targetEntityType        = null;
 	private Location							playerLocation;
 	private double								xRotation, yRotation;
 	private double								length, hLength;
@@ -1009,9 +990,6 @@ public abstract class Spell implements Comparable<Spell>
 	private final HashMap<Material, Boolean>	targetThroughMaterials	= new HashMap<Material, Boolean>();
 	private boolean								reverseTargeting		= false;
 	private final List<SpellVariant>			variants				= new ArrayList<SpellVariant>();
-	
-	protected int								entityMaxDistance		= 80;
-	protected double							entityMaxAngle			= 0.3;
 
 	protected PluginUtilities					utilities				= null;
 	protected Persistence						persistence				= null;

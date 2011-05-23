@@ -8,6 +8,7 @@ import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
+import com.elmakers.mine.bukkit.plugins.spells.Target;
 
 public class WolfSpell extends Spell
 {
@@ -38,13 +39,18 @@ public class WolfSpell extends Spell
 	@Override
 	public boolean onCast(String[] parameters)
 	{
-		Entity targetWolf = getTargetEntity(CraftWolf.class);
-		if (targetWolf == null || !(targetWolf instanceof CraftWolf))
+	    this.targetEntity(CraftWolf.class);
+		Target target = getTarget();
+		if (target.hasTarget() && target.isEntity())
 		{
-			return newWolf();
+    		Entity targetWolf = target.getEntity();
+    		if (!(targetWolf instanceof CraftWolf))
+    		{
+    			return newWolf();
+    		}
 		}
 		
-		CraftWolf wolfie = (CraftWolf)targetWolf;
+		CraftWolf wolfie = (CraftWolf)target.getEntity();
 		
 		castMessage(player, "You tame a wolfie!");
 		wolfie.setAngry(false);

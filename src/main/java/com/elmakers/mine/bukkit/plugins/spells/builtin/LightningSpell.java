@@ -1,12 +1,11 @@
 package com.elmakers.mine.bukkit.plugins.spells.builtin;
 
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LightningStrike;
 
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
+import com.elmakers.mine.bukkit.plugins.spells.Target;
 
 public class LightningSpell extends Spell
 {
@@ -15,20 +14,14 @@ public class LightningSpell extends Spell
     public boolean onCast(String[] parameters)
     {
         CraftWorld craftWorld = ((CraftWorld)player.getWorld());
-        Entity entity = getTargetEntity();
-        if (entity == null)
+        Target target = getTarget();
+        if (!target.hasTarget())
         {
-            Block targetBlock = getTargetBlock();
-            if (targetBlock == null)
-            {
-                sendMessage(player, "No target");
-                return false;
-            }
-            LightningStrike strike = craftWorld.strikeLightning(targetBlock.getLocation());
-            castMessage(player, "ZAP!");
-            return strike != null;
+            sendMessage(player, "No target");
+            return false;
         }
-        LightningStrike strike = craftWorld.strikeLightning(entity.getLocation());
+       
+        LightningStrike strike = craftWorld.strikeLightning(target.getLocation());
         castMessage(player, "ZAP!");
         return strike != null; 
     }
