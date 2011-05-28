@@ -190,7 +190,7 @@ public class RecallSpell extends Spell
 
 		if (autoDropOnDeath)
 		{
-			spells.registerEvent(SpellEventType.PLAYER_DEATH, this);
+			//spells.registerEvent(SpellEventType.PLAYER_DEATH, this);
 		}
 	}
 
