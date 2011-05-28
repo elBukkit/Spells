@@ -18,7 +18,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.elmakers.mine.bukkit.persisted.Persistence;
 import com.elmakers.mine.bukkit.persistence.dao.PluginCommand;
-import com.elmakers.mine.bukkit.plugins.nether.NetherGatePlugin;
 import com.elmakers.mine.bukkit.plugins.persistence.PersistencePlugin;
 import com.elmakers.mine.bukkit.utilities.PluginUtilities;
 
@@ -52,7 +51,6 @@ public class SpellsPlugin extends JavaPlugin
 	    	return;
 	    }
 
-        bindNetherGatePlugin();
 	    initialize();
 		
         PluginManager pm = getServer().getPluginManager();
@@ -64,6 +62,8 @@ public class SpellsPlugin extends JavaPlugin
         
         pm.registerEvent(Type.ENTITY_DEATH, entityListener, Priority.Normal, this);   
         pm.registerEvent(Type.ENTITY_DAMAGE, entityListener, Priority.Normal, this);
+        
+        pm.registerEvent(Type.BLOCK_PHYSICS, blockListener, Priority.Normal, this);
          
         PluginDescriptionFile pdfFile = this.getDescription();
         log.info(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled");
@@ -75,6 +75,7 @@ public class SpellsPlugin extends JavaPlugin
 
 		playerListener.setSpells(spells);
 		entityListener.setSpells(spells);
+        blockListener.setSpells(spells);
 
 		// setup commands
 		castCommand = utilities.getPlayerCommand("cast", "Cast spells by name", "<spellname>");
@@ -234,18 +235,6 @@ public class SpellsPlugin extends JavaPlugin
 	{
 		spells.clear();
 	}
-	
-	protected void bindNetherGatePlugin() 
-    {
-        Plugin checkForNether = this.getServer().getPluginManager().getPlugin("NetherGate");
-
-        if (checkForNether != null) 
-        {
-            log.info("Spells: found NetherGate! Thanks for using my plugins :)");
-            NetherGatePlugin plugin = (NetherGatePlugin)checkForNether;
-            spells.setNether(plugin.getManager());
-        }
-    }
 
 	/*
 	 * Private data
@@ -260,5 +249,6 @@ public class SpellsPlugin extends JavaPlugin
 	private final Logger log = Logger.getLogger("Minecraft");
 	private final SpellsPlayerListener playerListener = new SpellsPlayerListener();
 	private final SpellsEntityListener entityListener = new SpellsEntityListener();
+    private final SpellsBlockListener blockListener = new SpellsBlockListener();
 	
 }

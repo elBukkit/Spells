@@ -1,7 +1,7 @@
 package com.elmakers.mine.bukkit.plugins.spells.builtin;
 
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.World;
 
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
 
@@ -11,15 +11,26 @@ public class WeatherSpell extends Spell
     @Override
     public boolean onCast(String[] parameters)
     {
-        CraftWorld craftWorld = ((CraftWorld)player.getWorld());
-        boolean hasStorm = craftWorld.hasStorm();
-        craftWorld.setStorm(!hasStorm);
+        World world = player.getWorld();
+        boolean hasStorm = world.hasStorm();
+        boolean hasThunder = world.isThundering();
         if (hasStorm)
         {
-            castMessage(player, "You calm the storm");
+            if (hasThunder)
+            {
+                world.setStorm(false);
+                world.setThundering(false);
+                castMessage(player, "You calm the storm");
+            }
+            else
+            {
+                world.setThundering(true);
+                castMessage(player, "You anger the storm");
+            }
         }
         else
         {
+            world.setStorm(true);
             castMessage(player, "You stir up a storm");
         }
         return true;

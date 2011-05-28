@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -18,10 +19,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import com.elmakers.mine.bukkit.persisted.Persistence;
 import com.elmakers.mine.bukkit.persistence.dao.BlockList;
-import com.elmakers.mine.bukkit.plugins.nether.NetherManager;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.AbsorbSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.AlterSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.ArrowSpell;
@@ -46,6 +47,7 @@ import com.elmakers.mine.bukkit.plugins.spells.builtin.ManifestSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.MineSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.PeekSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.PillarSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.PortalSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.RecallSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.SignSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.TorchSpell;
@@ -55,9 +57,6 @@ import com.elmakers.mine.bukkit.plugins.spells.builtin.TunnelSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.UndoSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.WeatherSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.WolfSpell;
-import com.elmakers.mine.bukkit.plugins.spells.builtin.nether.PhaseSpell;
-import com.elmakers.mine.bukkit.plugins.spells.builtin.nether.PortalSpell;
-import com.elmakers.mine.bukkit.plugins.spells.builtin.nether.WindowSpell;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.UndoQueue;
 import com.elmakers.mine.bukkit.utilities.PluginUtilities;
@@ -309,50 +308,14 @@ public class Spells
 		return queue.getLast();
 	}
 	
-	public void cleanup()
-	{
-		synchronized(cleanupLock)
-		{
-			if (cleanupBlocks.size() == 0) return;
-			
-			List<BlockList> tempList = new ArrayList<BlockList>();
-			tempList.addAll(cleanupBlocks);
-			long timePassed = System.currentTimeMillis() - lastCleanupTime;
-			for (BlockList blocks : tempList)
-			{
-				boolean undoSuccess = false;
-				if (blocks.age((int)timePassed))
-				{
-					undoSuccess = blocks.undo();
-				}
-				if (undoSuccess && blocks.isExpired())
-				{
-					cleanupBlocks.remove(blocks);
-				}
-			}
-			lastCleanupTime = System.currentTimeMillis();
-		}
-	}
-	
-	public void forceCleanup()
-	{
-		for (BlockList blocks : cleanupBlocks)
-		{
-			blocks.undo();
-		}
-		cleanupBlocks.clear();
-	}
-	
 	public void scheduleCleanup(BlockList blocks)
 	{
-		synchronized(cleanupLock)
-		{
-			if (cleanupBlocks.size() == 0)
-			{
-				lastCleanupTime = System.currentTimeMillis();
-			}
-			cleanupBlocks.add(blocks);
-		}
+	    Server server = plugin.getServer();
+	    BukkitScheduler scheduler = server.getScheduler();
+	    
+	    // scheduler works in ticks- 20 ticks per second.
+	    long ticksToLive = blocks.getTimeToLive() * 20 / 1000;
+        scheduler.scheduleSyncDelayedTask(plugin, new CleanupBlocksTask(blocks), ticksToLive);
 	}
 	
 	/*
@@ -526,7 +489,6 @@ public class Spells
 	
 	public void clear()
 	{
-		forceCleanup();
 		movementListeners.clear();
 		materialListeners.clear();
 		quitListeners.clear();
@@ -552,9 +514,6 @@ public class Spells
 	
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
-		// Used as a refresh timer for now.. :(
-		cleanup();
-		
 		// Must allow listeners to remove themselves during the event!
 		List<Spell> active = new ArrayList<Spell>();
 		active.addAll(movementListeners);
@@ -673,19 +632,12 @@ public class Spells
         addSpell(new LightningSpell());
         addSpell(new GotoSpell());
         addSpell(new SignSpell());
-		
+        addSpell(new PortalSpell());
+        
 		// wip
 		// addSpell(new TowerSpell());
 		// addSpell(new ExtendSpell());
 		// addSpell(new StairsSpell());
-        
-        // NetherGate spells
-        if (nether != null)
-        {
-            addSpell(new PortalSpell(nether));
-            addSpell(new PhaseSpell(nether));
-            addSpell(new WindowSpell(nether));
-        }
 	}
 	
 	public boolean isInvincible(Player player)
@@ -704,10 +656,17 @@ public class Spells
 		invinciblePlayers.put(player.getName(), invincible);
 	}
 	
-	public void setNether(NetherManager nether)
-    {
-        this.nether = nether;
-    }
+	public boolean allowPhysics(Block block)
+	{
+	    if (physicsDisableTimeout == 0) return true;
+	    if (System.currentTimeMillis() > physicsDisableTimeout) physicsDisableTimeout = 0;
+	    return false;
+	}
+	
+	public void disablePhysics(int interval)
+	{
+	    physicsDisableTimeout = System.currentTimeMillis() + interval;
+	}
 	
 	/*
 	 * Private data
@@ -716,8 +675,6 @@ public class Spells
 	
 	private final String wandPropertiesFile = "wand.properties";
 	private int wandTypeId = 280;
-	
-	private NetherManager nether = null;
 	
 	static final String		DEFAULT_BUILDING_MATERIALS	= "1,2,3,4,5,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,24,25,35,41,42,43,45,46,47,48,49,56,57,60,65,66,73,74,79,80,81,82,83,85,86,87,88,89,90,91";
 	static final String		STICKY_MATERIALS = "37,38,39,50,51,55,59,63,64,65,66,68,70,71,72,75,76,77,78,83";
@@ -728,10 +685,7 @@ public class Spells
 	private List<Material>	stickyMaterialsDoubleHeight		= new ArrayList<Material>();
 	//private Material gravityFillMaterial = Material.DIRT;
 	
-	private final List<BlockList> cleanupBlocks = new ArrayList<BlockList>();
-	private final Object cleanupLock = new Object();
-	private long lastCleanupTime = 0;
-	
+	private long physicsDisableTimeout = 0;
 	private int undoQueueDepth = 256;
 	private boolean silent = false;
 	private boolean quiet = true;
@@ -751,7 +705,6 @@ public class Spells
 	private final List<Spell> quitListeners = new ArrayList<Spell>();
 	private final List<Spell> deathListeners = new ArrayList<Spell>();
 	private final HashMap<String, Boolean> invinciblePlayers = new HashMap<String, Boolean>();
-
 
 	private SpellsPlugin plugin = null;
 	

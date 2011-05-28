@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.07
+
+ - Add portal, 1.6-style, remove rest of nether spells.
+ - Add sign spell
+ - Use bukkitsched for cleanup, fix cushion
+ - Fix recurse (?) It's working now, anyway.
+
 ## 1.06
 
  - Entity targeting update, with LOS checks

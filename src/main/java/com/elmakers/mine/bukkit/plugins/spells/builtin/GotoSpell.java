@@ -32,7 +32,7 @@ public class GotoSpell extends Spell
             if (d != targetPlayer)
             {
                 double dd = getDistance(d.getLocation(), targetPlayer.getLocation());
-                if (destination == null || dd < destDistance)
+                if (destination == null || dd > destDistance)
                 {
                     destDistance = dd;
                     destination = d;
