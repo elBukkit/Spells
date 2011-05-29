@@ -28,6 +28,7 @@ import com.elmakers.mine.bukkit.plugins.spells.builtin.AlterSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.ArrowSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.BlastSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.BlinkSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.BoomSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.BridgeSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.ConstructSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.CushionSpell;
@@ -603,7 +604,7 @@ public class Spells
 		addSpell(new HealSpell());
 		addSpell(new BlinkSpell());
 		addSpell(new TorchSpell());
-		addSpell(new FireballSpell());
+		addSpell(new BoomSpell());
 		addSpell(new PillarSpell());
 		addSpell(new BridgeSpell());
 		addSpell(new AbsorbSpell());
@@ -635,6 +636,7 @@ public class Spells
         addSpell(new SignSpell());
         addSpell(new PortalSpell());
         addSpell(new GrenadeSpell());
+        addSpell(new FireballSpell());
         
 		// wip
 		// addSpell(new TowerSpell());

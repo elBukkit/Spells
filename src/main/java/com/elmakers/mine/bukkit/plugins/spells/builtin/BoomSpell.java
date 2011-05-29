@@ -1,56 +1,75 @@
 package com.elmakers.mine.bukkit.plugins.spells.builtin;
 
-import net.minecraft.server.EntityFireball;
 import net.minecraft.server.EntityLiving;
+import net.minecraft.server.WorldServer;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
+import com.elmakers.mine.bukkit.plugins.spells.Target;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.MathHelper;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.Vec3D;
 
-public class FireballSpell extends Spell {
+public class BoomSpell extends Spell {
 
-	@Override
-	public boolean onCast(String[] parameters) 
+	protected int defaultSize = 1;
+
+	public BoomSpell()
 	{
-		Block target = getTargetBlock();
-		Location playerLoc = player.getLocation();
+		addVariant("kaboom", Material.REDSTONE_WIRE, getCategory(), "Create a big explosion", "5");
+		addVariant("nuke", Material.BED, getCategory(), "Create a huge explosion", "10");
+	}
+	
+	public boolean createExplosionAt(Location target, float size)
+	{
 		if (target == null) 
 		{
 			castMessage(player, "No target");
 			return false;
 		}
 		
-		double dx = target.getX() - playerLoc.getX();
-		double height = 1;
-        double dy = (target.getY() + (double)(height / 2.0F)) - (playerLoc.getY() + (double)(height / 2.0F));
-        double dz = target.getZ() - playerLoc.getZ();
-		
 		castMessage(player, "FOOM!");
 		CraftPlayer craftPlayer = (CraftPlayer)player;
 		EntityLiving playerEntity = craftPlayer.getHandle();
-		EntityFireball fireball = new EntityFireball(((CraftWorld)player.getWorld()).getHandle(), playerEntity, dx, dy, dz);
+        WorldServer world = ((CraftWorld)player.getWorld()).getHandle();
 		
-		double d8 = 4D;
-        Vec3D vec3d = getLocation(player, 1.0F);
-        fireball.locX = playerLoc.getX() + vec3d.xCoord * d8;
-        fireball.locY = playerLoc.getY() + (double)(height / 2.0F) + 0.5D;
-        fireball.locZ = playerLoc.getZ() + vec3d.zCoord * d8;
-        
-        ((CraftWorld)player.getWorld()).getHandle().a(fireball);
+        world.createExplosion(playerEntity, target.getBlockX(), target.getBlockY(), target.getBlockZ(), size, true);
 		return true;
+	}
+	
+	@Override
+	public boolean onCast(String[] parameters) 
+	{
+        float size = defaultSize;
+        if (parameters.length > 0)
+        {
+        	try
+        	{
+        		size = Float.parseFloat(parameters[0]);
+        	}
+        	catch (NumberFormatException ex)
+        	{
+        		size = defaultSize;
+        	}
+        }
+		Target target = getTarget();
+		if (!target.hasTarget())
+		{
+		    sendMessage(player, "No target");
+            return false;
+		}
+		
+		return createExplosionAt(target.getLocation(), size);
 	}
 
 	@Override
 	public String getName() 
 	{
-		return "fireball";
+		return "boom";
 	}
 
 	@Override
@@ -94,6 +113,6 @@ public class FireballSpell extends Spell {
 	@Override
 	public Material getMaterial()
 	{
-		return Material.NETHERRACK;
+		return Material.RED_ROSE;
 	}
 }

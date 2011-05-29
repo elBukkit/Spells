@@ -38,7 +38,6 @@ public class GrenadeSpell extends Spell
         grenade.setPositionRotation(loc.getX(), loc.getY(), loc.getZ(), 0, 0);
         
         Vector aim = getAimVector();
-        aim.multiply(2);
         grenade.motX = aim.getX();
         grenade.motY = aim.getY();
         grenade.motZ = aim.getZ();
