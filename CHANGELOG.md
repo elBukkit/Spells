@@ -3,6 +3,7 @@
 ## 1.09
 
  - Use a generic "coversurface" function to refactor several spells (fire, frost) and make lightning -> storm
+ - Add grenade spell, drops a primed block of TNT
 
 ## 1.08
 

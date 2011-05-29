@@ -20,9 +20,8 @@ public class FireballSpell extends Spell {
 
 	public FireballSpell()
 	{
-		addVariant("tnt", Material.TNT, getCategory(), "Create a rather large explosion", "4");
-		addVariant("kaboom", Material.REDSTONE_WIRE, getCategory(), "Create a big explosion", "8");
-		addVariant("nuke", Material.BED, getCategory(), "Create a rediculous explisoin", "20");
+		addVariant("kaboom", Material.REDSTONE_WIRE, getCategory(), "Create a big explosion", "5");
+		addVariant("nuke", Material.BED, getCategory(), "Create a huge explosion", "10");
 	}
 	
 	public boolean createExplosionAt(Location target, float size)

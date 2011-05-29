@@ -39,6 +39,7 @@ import com.elmakers.mine.bukkit.plugins.spells.builtin.FireballSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.FrostSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.GillsSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.GotoSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.GrenadeSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.HealSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.InvincibleSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.LavaSpell;
@@ -633,6 +634,7 @@ public class Spells
         addSpell(new GotoSpell());
         addSpell(new SignSpell());
         addSpell(new PortalSpell());
+        addSpell(new GrenadeSpell());
         
 		// wip
 		// addSpell(new TowerSpell());
