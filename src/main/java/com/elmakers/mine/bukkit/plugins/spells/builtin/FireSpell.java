@@ -7,9 +7,36 @@ import org.bukkit.block.BlockFace;
 import com.elmakers.mine.bukkit.persistence.dao.BlockList;
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
+import com.elmakers.mine.bukkit.utilities.SimpleBlockAction;
 
 public class FireSpell extends Spell
 {
+    public class FireAction extends SimpleBlockAction
+    {
+        public boolean perform(Block block)
+        {
+            if (block.getType() == Material.AIR || block.getType() == Material.FIRE)
+            {
+                return false;
+            }
+            Material material = Material.FIRE;
+            
+            if (block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER || block.getType() == Material.ICE || block.getType() == Material.SNOW)
+            {
+                material = Material.AIR;
+            }
+            else
+            {
+                block = block.getFace(BlockFace.UP);
+            }
+            
+            super.perform(block);
+            block.setType(material);
+            
+            return true;
+        }
+    }
+    
 	public FireSpell()
 	{
 		addVariant("inferno", Material.FIRE, "combat", "Burn a wide area", "6");
@@ -48,44 +75,20 @@ public class FireSpell extends Spell
 		{
 			radius = maxRadius;
 		}
-		
-		BlockList burnedBlocks = new BlockList();
-		int diameter = radius * 2;
-		int midX = (diameter - 1) / 2;
-		int midY = (diameter - 1) / 2;
-		int midZ = (diameter - 1) / 2;
-		int diameterOffset = diameter - 1;
 
-		if (radius <= 1)
+        FireAction action = new FireAction();
+
+        if (radius <= 1)
 		{
-			burnBlock(0, midY, 0, target, 0, burnedBlocks);
+            action.perform(target);
 		}
 		else
 		{
-			for (int x = 0; x < radius; ++x)
-			{
-				for (int z = 0; z < radius; ++z)
-				{
-					if (checkPosition(x - midX, z - midZ, radius) <= 0)
-					{
-						int y = midY;
-						burnBlock(x, y, z, target, radius, burnedBlocks);
-						
-						burnBlock(diameterOffset - x, y, z, target, radius, burnedBlocks);
-						burnBlock(x, diameterOffset - y, z, target, radius, burnedBlocks);
-						burnBlock(x, y, diameterOffset - z, target, radius, burnedBlocks);
-						burnBlock(diameterOffset - x, diameterOffset - y, z, target, radius, burnedBlocks);
-						burnBlock(x, diameterOffset - y, diameterOffset - z, target, radius, burnedBlocks);
-						burnBlock(diameterOffset - x, y, diameterOffset - z, target, radius, burnedBlocks);
-						burnBlock(diameterOffset - x, diameterOffset - y, diameterOffset - z, target, radius, burnedBlocks);
-					}
-					
-				}
-			}
+		    this.coverSurface(target.getLocation(), radius, action);
 		}
 
-		spells.addToUndoQueue(player, burnedBlocks);
-		castMessage(player, "Burned " + burnedBlocks.size() + " blocks");
+		spells.addToUndoQueue(player, action.getBlocks());
+		castMessage(player, "Burned " + action.getBlocks().size() + " blocks");
 		
 		return true;
 	}

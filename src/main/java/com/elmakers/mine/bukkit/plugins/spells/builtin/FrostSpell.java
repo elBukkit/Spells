@@ -7,6 +7,7 @@ import org.bukkit.block.BlockFace;
 import com.elmakers.mine.bukkit.persistence.dao.BlockList;
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
+import com.elmakers.mine.bukkit.utilities.SimpleBlockAction;
 
 public class FrostSpell extends Spell
 {
@@ -15,6 +16,42 @@ public class FrostSpell extends Spell
 	private int				defaultSearchDistance	= 32;
 	private int				verticalSearchDistance	= 8;
 	
+	public class FrostAction extends SimpleBlockAction
+    {
+        public boolean perform(Block block)
+        {
+
+            if (block.getType() == Material.AIR || block.getType() == Material.SNOW)
+            {
+                return false;
+            }
+            Material material = Material.SNOW;
+            if (block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER)
+            {
+                material = Material.ICE;
+            }
+            else if (block.getType() == Material.LAVA)
+            {
+                material = Material.COBBLESTONE;
+            }
+            else if (block.getType() == Material.STATIONARY_LAVA)
+            {
+                material = Material.OBSIDIAN;
+            }
+            else if (block.getType() == Material.FIRE)
+            {
+                material = Material.AIR;
+            }
+            else
+            {
+                block = block.getFace(BlockFace.UP);
+            }
+            super.perform(block);
+            block.setType(material);
+            return true;
+        }
+    }
+	 
 	@Override
 	public boolean onCast(String[] parameters)
 	{
@@ -47,37 +84,21 @@ public class FrostSpell extends Spell
 			}
 		}
 		
-		BlockList frostedBlocks = new BlockList();
-		int diameter = radius * 2;
-		int midX = (diameter - 1) / 2;
-		int midY = (diameter - 1) / 2;
-		int midZ = (diameter - 1) / 2;
-		int diameterOffset = diameter - 1;
+	   FrostAction action = new FrostAction();
 
-		for (int x = 0; x < radius; ++x)
-		{
-			for (int z = 0; z < radius; ++z)
-			{
-				if (checkPosition(x - midX, z - midZ, radius) <= 0)
-				{
-					int y = midY;
-					frostBlock(x, y, z, target, radius, frostedBlocks);
-					frostBlock(diameterOffset - x, y, z, target, radius, frostedBlocks);
-					frostBlock(x, diameterOffset - y, z, target, radius, frostedBlocks);
-					frostBlock(x, y, diameterOffset - z, target, radius, frostedBlocks);
-					frostBlock(diameterOffset - x, diameterOffset - y, z, target, radius, frostedBlocks);
-					frostBlock(x, diameterOffset - y, diameterOffset - z, target, radius, frostedBlocks);
-					frostBlock(diameterOffset - x, y, diameterOffset - z, target, radius, frostedBlocks);
-					frostBlock(diameterOffset - x, diameterOffset - y, diameterOffset - z, target, radius, frostedBlocks);
-				}
-				
-			}
-		}
+        if (radius <= 1)
+        {
+            action.perform(target);
+        }
+        else
+        {
+            this.coverSurface(target.getLocation(), radius, action);
+        }
 
-		spells.addToUndoQueue(player, frostedBlocks);
-		castMessage(player, "Frosted " + frostedBlocks.size() + " blocks");
-		
-		return true;
+        spells.addToUndoQueue(player, action.getBlocks());
+        castMessage(player, "Frosted " + action.getBlocks().size() + " blocks");
+        
+        return true;
 	}
 	
 	public void frostBlock(int dx, int dy, int dz, Block centerPoint, int radius, BlockList frostedBlocks)

@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.09
+
+ - Use a generic "coversurface" function to refactor several spells (fire, frost) and make lightning -> storm
+
+## 1.08
+
+ - Fix material cycling (Wand), and filling with the native material.
+
 ## 1.07
 
  - Add portal, 1.6-style, remove rest of nether spells.

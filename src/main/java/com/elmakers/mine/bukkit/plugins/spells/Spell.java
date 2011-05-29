@@ -23,6 +23,7 @@ import org.bukkit.util.Vector;
 import com.elmakers.mine.bukkit.persisted.Persistence;
 import com.elmakers.mine.bukkit.persistence.dao.PlayerData;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
+import com.elmakers.mine.bukkit.utilities.BlockAction;
 import com.elmakers.mine.bukkit.utilities.PluginUtilities;
 
 /**
@@ -193,26 +194,14 @@ public abstract class Spell implements Comparable<Spell>
 			return result;
 		}
 		
-		if (!isAir && !buildingMaterials.contains(result.getType()))
-		{
-			return null;
-		}
-		
 		// Should be air now
 		result = null;
 		
-		for (int i = 8; i >= 0; i--)
-		{
-			if (contents[i] == null) return new ItemStack(Material.AIR);;
-			Material candidate = contents[i].getType();
-			if (buildingMaterials.contains(candidate))
-			{
-				result = new ItemStack(Material.AIR);
-				break;
-			}
-		}
+		// Check for other building materials- if the second-to-last material is a building
+		// material, then return air- else return null.
+		if (contents[7] == null || contents[7].getType() == Material.AIR) return null;
 		
-		return result;
+		return new ItemStack(Material.AIR);
 	}
 	
 	public void targetEntity(Class<? extends Entity> typeOf)
@@ -968,6 +957,52 @@ public abstract class Spell implements Comparable<Spell>
 	{
 		return persistence;
 	}
+
+    public boolean isInCircle(int x, int z, int R)
+    {
+        return ((x * x) +  (z * z) - (R * R)) <= 0;
+    }
+    
+    public void coverSurface(Location center, int radius, BlockAction action)
+    {   
+        int y = center.getBlockY();
+        for (int dx = -radius; dx < radius; ++dx)
+        {
+            for (int dz = -radius; dz < radius; ++dz)
+            {
+                if (isInCircle(dx, dz, radius))
+                {
+                    int x = center.getBlockX() + dx;
+                    int z = center.getBlockZ() + dz;
+                    Block block = player.getWorld().getBlockAt(x, y, z);
+                    int depth = 0;
+                    
+                    if (block.getType() == Material.AIR)
+                    {
+                        while (depth < verticalSearchDistance && block.getType() == Material.AIR)
+                        {
+                            depth++;
+                            block = block.getFace(BlockFace.DOWN);
+                        }   
+                    }
+                    else
+                    {
+                        while (depth < verticalSearchDistance && block.getType() != Material.AIR)
+                        {
+                            depth++;
+                            block = block.getFace(BlockFace.UP);
+                        }
+                        block = block.getFace(BlockFace.DOWN);
+                    }
+
+                    if (block.getType() != Material.AIR)
+                    {
+                        action.perform(block);
+                    }  
+                } 
+            }
+        }
+    }
 	
 	/*
 	 * private data
@@ -978,6 +1013,7 @@ public abstract class Spell implements Comparable<Spell>
 	private double								viewHeight				= 1.65;
 	private double								step					= 0.2;
 
+	private int                                 verticalSearchDistance  = 8;
 	private boolean								targetingComplete;
 	private int									targetHeightRequired	= 1;
 	private Class<? extends Entity>             targetEntityType        = null;

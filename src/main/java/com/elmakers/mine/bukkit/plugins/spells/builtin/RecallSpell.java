@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
-import com.elmakers.mine.bukkit.plugins.spells.SpellEventType;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 
 public class RecallSpell extends Spell
