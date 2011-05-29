@@ -64,7 +64,6 @@ public class TorchSpell extends Spell
 			return true;
 		}
 		
-		
 		Block target = getTargetBlock();	
 		Block face = getLastBlock();
 		

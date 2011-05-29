@@ -2,48 +2,46 @@ package com.elmakers.mine.bukkit.plugins.spells.builtin;
 
 import net.minecraft.server.EntityFireball;
 import net.minecraft.server.EntityLiving;
+import net.minecraft.server.MathHelper;
+import net.minecraft.server.WorldServer;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
-import com.elmakers.mine.bukkit.plugins.spells.utilities.MathHelper;
-import com.elmakers.mine.bukkit.plugins.spells.utilities.Vec3D;
 
 public class FireballSpell extends Spell {
 
 	@Override
 	public boolean onCast(String[] parameters) 
 	{
-		Block target = getTargetBlock();
-		Location playerLoc = player.getLocation();
-		if (target == null) 
-		{
-			castMessage(player, "No target");
-			return false;
-		}
-		
-		double dx = target.getX() - playerLoc.getX();
-		double height = 1;
-        double dy = (target.getY() + (double)(height / 2.0F)) - (playerLoc.getY() + (double)(height / 2.0F));
-        double dz = target.getZ() - playerLoc.getZ();
-		
-		castMessage(player, "FOOM!");
-		CraftPlayer craftPlayer = (CraftPlayer)player;
-		EntityLiving playerEntity = craftPlayer.getHandle();
-		EntityFireball fireball = new EntityFireball(((CraftWorld)player.getWorld()).getHandle(), playerEntity, dx, dy, dz);
-		
-		double d8 = 4D;
-        Vec3D vec3d = getLocation(player, 1.0F);
-        fireball.locX = playerLoc.getX() + vec3d.xCoord * d8;
-        fireball.locY = playerLoc.getY() + (double)(height / 2.0F) + 0.5D;
-        fireball.locZ = playerLoc.getZ() + vec3d.zCoord * d8;
+        CraftWorld cw = (CraftWorld)player.getWorld();
+        WorldServer world = cw.getHandle();
+        CraftPlayer craftPlayer = (CraftPlayer)player;
+        EntityLiving playerEntity = craftPlayer.getHandle();
+        Location playerLoc = player.getLocation();
+        Vector aim = getAimVector();
+        int fireballX = (int)(playerLoc.getX() + aim.getX() * 2 + 0.5);
+        int fireballY = (int)(playerLoc.getY() + aim.getY() * 2 + 2);
+        int fireballZ = (int)(playerLoc.getZ() + aim.getZ() * 2 + 0.5);
+        double d0 = aim.getX();
+        double d1 = aim.getY();
+        double d2 = aim.getZ();
+
+        EntityFireball fireball = new EntityFireball(world, playerEntity, aim.getX(), aim.getY(), aim.getZ());
+        fireball.setPositionRotation(fireballX, fireballY, fireballZ, playerLoc.getYaw(), playerLoc.getPitch());
+ 
+        // De-randomize aim vector
+        double d3 = (double) MathHelper.a(d0 * d0 + d1 * d1 + d2 * d2);
+
+        fireball.c = d0 / d3 * 0.1D;
+        fireball.d = d1 / d3 * 0.1D;
+        fireball.e = d2 / d3 * 0.1D;
         
-        ((CraftWorld)player.getWorld()).getHandle().a(fireball);
+        world.addEntity(fireball);
 		return true;
 	}
 
@@ -58,32 +56,6 @@ public class FireballSpell extends Spell {
 	{
 		return "Cast an exploding fireball";
 	}
-	
-	public Vec3D getLocation(Player player, float f)
-    {
-		Location playerLoc = player.getLocation();
-    	float rotationYaw = playerLoc.getYaw();
-    	float rotationPitch = playerLoc.getPitch();
-    	float prevRotationYaw = playerLoc.getYaw();
-    	float prevRotationPitch = playerLoc.getPitch();
-        if(f == 1.0F)
-        {
-            float f1 = MathHelper.cos(-rotationYaw * 0.01745329F - 3.141593F);
-            float f3 = MathHelper.sin(-rotationYaw * 0.01745329F - 3.141593F);
-            float f5 = -MathHelper.cos(-rotationPitch * 0.01745329F);
-            float f7 = MathHelper.sin(-rotationPitch * 0.01745329F);
-            return Vec3D.createVector(f3 * f5, f7, f1 * f5);
-        } else
-        {
-            float f2 = prevRotationPitch + (rotationPitch - prevRotationPitch) * f;
-            float f4 = prevRotationYaw + (rotationYaw - prevRotationYaw) * f;
-            float f6 = MathHelper.cos(-f4 * 0.01745329F - 3.141593F);
-            float f8 = MathHelper.sin(-f4 * 0.01745329F - 3.141593F);
-            float f9 = -MathHelper.cos(-f2 * 0.01745329F);
-            float f10 = MathHelper.sin(-f2 * 0.01745329F);
-            return Vec3D.createVector(f8 * f9, f10, f6 * f9);
-        }
-    }
 
 	@Override
 	public String getCategory() 

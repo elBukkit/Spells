@@ -20,7 +20,7 @@ public class BlinkSpell extends Spell
 	public BlinkSpell()
 	{
 		addVariant("ascend", Material.RED_MUSHROOM, getCategory(), "Go up to the nearest safe spot", "ascend");
-		addVariant("descend", Material.BROWN_MUSHROOM, getCategory(), "Go down to the nearest safe spot", "descend");
+		addVariant("descend", Material.BROWN_MUSHROOM, getCategory(), "Travel underground", "descend");
 	}
 	
 	public String getName()

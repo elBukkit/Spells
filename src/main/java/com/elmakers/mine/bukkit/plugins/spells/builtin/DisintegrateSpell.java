@@ -19,6 +19,11 @@ public class DisintegrateSpell extends Spell
 	public boolean onCast(String[] parameters)
 	{
 	    Target target = getTarget();
+        if (target == null)
+        {
+            castMessage(player, "No target");
+            return false;
+        }
 	    if (target.isEntity())
 	    {
 	        Entity targetEntity = target.getEntity();
@@ -27,11 +32,12 @@ public class DisintegrateSpell extends Spell
 	            LivingEntity li = (LivingEntity)targetEntity;
 	            if (li instanceof Player)
 	            {
-	                li.damage(1);
+	                li.damage(8);
 	            }
 	            else
 	            {
 	                li.damage(10);
+	                li.setHealth(0);
 	            }
 	            castMessage(player, "ZOT!");
 	            return true;

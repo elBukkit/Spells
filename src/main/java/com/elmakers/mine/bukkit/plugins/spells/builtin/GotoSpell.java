@@ -15,12 +15,20 @@ public class GotoSpell extends Spell
     @Override
     public boolean onCast(String[] parameters)
     {
+        boolean gather = false;
         Player targetPlayer = player;
         Target target = getTarget();
         Entity targetEntity = target.getEntity();
         if (targetEntity != null && targetEntity instanceof Player)
         {
             targetPlayer = (Player)targetEntity;
+        }
+        else
+        {
+            if (getYRotation() > 80)
+            {
+                gather = true;
+            }
         }
         
         List<Player> players = targetPlayer.getWorld().getPlayers();
@@ -44,6 +52,11 @@ public class GotoSpell extends Spell
             return false;
         }
         
+        if (gather)
+        {
+            targetPlayer = destination;
+            destination = player;
+        }
         targetPlayer.teleport(destination);
         castMessage(player, "Teleporting " + targetPlayer.getName() + " to " + destination.getName());
         

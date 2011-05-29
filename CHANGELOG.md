@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.10
+
+ - Fill (recurse, etc) will target water now.
+ - Make "goto" get the person farthest from you when aimed up
+ - Add paging to /spells list
+ - Add arrowrain spell variant
+
 ## 1.09
 
  - Use a generic "coversurface" function to refactor several spells (fire, frost) and make lightning -> storm

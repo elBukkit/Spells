@@ -69,12 +69,6 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.elmakers.mine.bukkit.plugins.nether</groupId>
-			<artifactId>NetherGate</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -109,7 +103,7 @@
 									<manifestEntries>
 										<Main-Class>org.bukkit.craftbukkit.Main</Main-Class>
 										<Build-Version>${build.version}</Build-Version>
-										<Class-Path>Persistence.jar NetherGate.jar</Class-Path>
+										<Class-Path>Persistence.jar</Class-Path>
 									</manifestEntries>
 								</transformer>
 							</transformers>

@@ -156,7 +156,7 @@ public class TunnelSpell extends Spell
 	@Override
 	public String getDescription()
 	{
-		return "Create a tunnel through common materials";
+		return "Create a tunnel for mining";
 	}
 
 	@Override

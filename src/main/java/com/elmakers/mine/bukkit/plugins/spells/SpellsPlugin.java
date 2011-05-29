@@ -122,7 +122,21 @@ public class SpellsPlugin extends JavaPlugin
 
 	public boolean onSpells(Player player, String[] parameters)
 	{
-		listSpells(player);
+	    int pageNumber = 1;
+	    String category = null;
+        if (parameters.length > 0)
+        {
+            try
+            {
+                pageNumber = Integer.parseInt(parameters[0]);
+            }
+            catch (NumberFormatException ex)
+            {
+                pageNumber = 1;
+                category = parameters[0];
+            }
+        }
+		listSpells(player, pageNumber, category);
 
 		return true;
 	}
@@ -132,7 +146,7 @@ public class SpellsPlugin extends JavaPlugin
 	 * Help commands
 	 */
 
-	public void listSpellsByCategory(Player player, String category)
+	public void listSpellsByCategory(Player player,String category)
 	{
 		List<SpellVariant> categorySpells = new ArrayList<SpellVariant>();
 		List<SpellVariant> spellVariants = spells.getAllSpells();
@@ -191,13 +205,25 @@ public class SpellsPlugin extends JavaPlugin
 		}
 	}
 	
-	public void listSpells(Player player)
+	public void listSpells(Player player, int pageNumber, String category)
 	{
+	    if (category != null)
+	    {
+	        listSpellsByCategory(player, category);
+	        return;
+	    }
+	    
 		HashMap<String, SpellGroup> spellGroups = new HashMap<String, SpellGroup>();
 		List<SpellVariant> spellVariants = spells.getAllSpells();
 		
+		int spellCount = 0;
 		for (SpellVariant spell : spellVariants)
 		{
+		    if (!spell.hasSpellPermission(player))
+            {
+		        continue;
+            }
+		    spellCount++;
 			SpellGroup group = spellGroups.get(spell.getCategory());
 			if (group == null)
 			{
@@ -212,21 +238,44 @@ public class SpellsPlugin extends JavaPlugin
 		sortedGroups.addAll(spellGroups.values());
 		Collections.sort(sortedGroups);
 		
+		int maxLines = 5;
+		int maxPages = spellCount / maxLines + 1;
+		if (pageNumber > maxPages)
+		{
+		    pageNumber = maxPages;
+		}
+		
+		player.sendMessage("You know " + spellCount + " spells. [" + pageNumber + "/" + maxPages + "]");
+		
+		int currentPage = 1;
+        int lineCount = 0;
+        int printedCount = 0;
 		for (SpellGroup group : sortedGroups)
 		{
+		    if (printedCount > maxLines) break;
+            
 			boolean isFirst = true;
 			Collections.sort(group.spells);
 			for (SpellVariant spell : group.spells)
 			{
-				if (spell.hasSpellPermission(player))
+			    if (printedCount > maxLines) break;
+			    
+				if (currentPage == pageNumber)
 				{
-					if (isFirst)
-					{
-						player.sendMessage(group.groupName + ":");
-						isFirst = false;
-					}
-					player.sendMessage(" " + spell.getName() + " [" + spell.getMaterial().name().toLowerCase() + "] : " + spell.getDescription());
+				    if (isFirst)
+                    {
+                        player.sendMessage(group.groupName + ":");
+                        isFirst = false;
+                    }
+				    player.sendMessage(" " + spell.getName() + " [" + spell.getMaterial().name().toLowerCase() + "] : " + spell.getDescription());
+				    printedCount++;
 				}
+				lineCount++;
+				if (lineCount == maxLines)
+				{
+				    lineCount = 0;
+				    currentPage++;
+				}	
 			}
 		}
 	}

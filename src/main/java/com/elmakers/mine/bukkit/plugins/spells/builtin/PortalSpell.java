@@ -7,7 +7,6 @@ import org.bukkit.block.BlockFace;
 import com.elmakers.mine.bukkit.persistence.dao.BlockList;
 import com.elmakers.mine.bukkit.persistence.dao.BoundingBox;
 import com.elmakers.mine.bukkit.persistence.dao.MaterialList;
-import com.elmakers.mine.bukkit.plugins.nether.NetherManager;
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
 import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 import com.elmakers.mine.bukkit.utilities.CSVParser;
@@ -143,7 +142,4 @@ public class PortalSpell extends Spell
          destructible = csv.parseMaterials(DEFAULT_DESTRUCTIBLES);
      }
     }
-	
-	protected NetherManager nether;
-
 }

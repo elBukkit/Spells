@@ -20,8 +20,8 @@ public class BoomSpell extends Spell {
 
 	public BoomSpell()
 	{
-		addVariant("kaboom", Material.REDSTONE_WIRE, getCategory(), "Create a big explosion", "5");
-		addVariant("nuke", Material.BED, getCategory(), "Create a huge explosion", "10");
+		addVariant("kaboom", Material.REDSTONE_WIRE, getCategory(), "Create a big explosion", "6");
+		addVariant("nuke", Material.BED, getCategory(), "Create a huge explosion", "20");
 	}
 	
 	public boolean createExplosionAt(Location target, float size)

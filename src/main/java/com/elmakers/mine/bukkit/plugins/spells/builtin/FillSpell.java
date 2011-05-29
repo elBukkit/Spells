@@ -28,6 +28,8 @@ public class FillSpell extends Spell
 	@Override
 	public boolean onCast(String[] parameters) 
 	{
+	    noTargetThrough(Material.STATIONARY_WATER);
+	    noTargetThrough(Material.WATER);
 		Block targetBlock = getTargetBlock();
 		Material material = spells.finishMaterialUse(player);
 		byte data = spells.getMaterialData(player);

@@ -23,10 +23,10 @@ public class ConstructSpell extends Spell
 	
 	public ConstructSpell()
 	{
-		addVariant("shell", Material.BOWL, getCategory(), "Create a large shell using your selected material", "sphere hollow 10");
-		addVariant("box", Material.WOODEN_DOOR, getCategory(), "Create a large box using your selected material", "cuboid hollow 6");
-		addVariant("superblob", Material.CLAY_BRICK, getCategory(), "Create a large sphere at your target", "sphere 8");
-		addVariant("sandblast", Material.SANDSTONE, getCategory(), "Create a blob of sand to drop on an enemy", "cuboid 4 with sand");
+		addVariant("shell", Material.BOWL, getCategory(), "Create a large spherical shell", "sphere hollow 10");
+		addVariant("box", Material.WOODEN_DOOR, getCategory(), "Create a large box", "cuboid hollow 6");
+		addVariant("superblob", Material.CLAY_BRICK, getCategory(), "Create a large solid sphere", "sphere 8");
+		addVariant("sandblast", Material.SANDSTONE, getCategory(), "Drop a big block of sand", "cuboid 4 with sand");
 	}
 	
 	public enum ConstructionType
@@ -240,7 +240,7 @@ public class ConstructSpell extends Spell
 	@Override
 	public String getDescription()
 	{
-		return "Add some blocks to your target";
+		return "Create a solid blob";
 	}
 	
 	@Override

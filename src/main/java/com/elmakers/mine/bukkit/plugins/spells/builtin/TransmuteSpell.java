@@ -84,7 +84,7 @@ public class TransmuteSpell extends Spell
 	@Override
 	public String getDescription()
 	{
-		return "Modify your last construction";
+		return "Modify your last spell";
 	}
 
 	@Override
