@@ -11,7 +11,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -254,13 +253,28 @@ public abstract class Spell implements Comparable<Spell>
 	 */
 	public boolean isOkToStandIn(Material mat)
 	{
-		return (mat == Material.AIR || mat == Material.WATER || mat == Material.STATIONARY_WATER || mat == Material.SNOW);
+		return 
+		(
+		        mat == Material.AIR 
+		||    mat == Material.WATER 
+		||    mat == Material.STATIONARY_WATER 
+		||    mat == Material.SNOW
+		||    mat == Material.TORCH
+		||    mat == Material.SIGN_POST
+		||    mat == Material.REDSTONE_TORCH_ON
+        ||    mat == Material.REDSTONE_TORCH_OFF
+        ||    mat == Material.YELLOW_FLOWER
+        ||    mat == Material.RED_ROSE
+        ||    mat == Material.RED_MUSHROOM
+        ||    mat == Material.BROWN_MUSHROOM
+        ||    mat == Material.LONG_GRASS
+		);
 	}
 
 	public boolean isOkToStandOn(Material mat)
 	{
 		// Added snow here to avoid blink bounciness
-		return (mat != Material.AIR && mat != Material.LAVA && mat != Material.STATIONARY_LAVA && mat != Material.SNOW);
+		return (mat != Material.AIR && mat != Material.LAVA && mat != Material.STATIONARY_LAVA);
 	}
 	
 	public Location findPlaceToStand(Location playerLoc, boolean goUp)
@@ -539,7 +553,6 @@ public abstract class Spell implements Comparable<Spell>
 		for (Entity entity : entities)
 		{
             if (entity == player) continue;
-		    if (!(entity instanceof LivingEntity)) continue;
 			if (targetEntityType != null && !(targetEntityType.isAssignableFrom(entity.getClass()))) continue;
 			
 			Target newScore = new Target(player, entity);
@@ -806,6 +819,7 @@ public abstract class Spell implements Comparable<Spell>
 		targetThrough(Material.AIR);
 		targetThrough(Material.WATER);
 		targetThrough(Material.STATIONARY_WATER);
+        targetThrough(Material.SNOW);
 
 		initializeTargeting(player);
 

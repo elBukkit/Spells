@@ -8,11 +8,23 @@ import com.elmakers.mine.bukkit.plugins.spells.Spell;
 
 public class FlingSpell extends Spell
 {
-	private final int magnitude = 20;
+	private final int defaultMagnitude = 5;
 
 	@Override
 	public boolean onCast(String[] parameters)
 	{
+	    int magnitude = defaultMagnitude;
+        if (parameters.length > 0)
+        {
+            try
+            {
+                magnitude = Integer.parseInt(parameters[0]);
+            }
+            catch (NumberFormatException ex)
+            {
+                magnitude = defaultMagnitude;
+            }
+        }
 		Vector velocity = getAimVector();
 		velocity.multiply(magnitude);
 		CraftPlayer craftPlayer = (CraftPlayer)player;

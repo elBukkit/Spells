@@ -37,6 +37,8 @@ import com.elmakers.mine.bukkit.plugins.spells.builtin.FamiliarSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.FillSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.FireSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.FireballSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.FlingSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.ForceSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.FrostSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.GillsSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.GotoSpell;
@@ -52,7 +54,9 @@ import com.elmakers.mine.bukkit.plugins.spells.builtin.PillarSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.PortalSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.RecallSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.SignSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.StairsSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.TorchSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.TowerSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.TransmuteSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.TreeSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.TunnelSpell;
@@ -637,11 +641,13 @@ public class Spells
         addSpell(new PortalSpell());
         addSpell(new GrenadeSpell());
         addSpell(new FireballSpell());
+        addSpell(new FlingSpell());
+        addSpell(new ForceSpell());
         
 		// wip
-		// addSpell(new TowerSpell());
+		addSpell(new TowerSpell());
 		// addSpell(new ExtendSpell());
-		// addSpell(new StairsSpell());
+		addSpell(new StairsSpell());
 	}
 	
 	public boolean isInvincible(Player player)

@@ -3,6 +3,7 @@ package com.elmakers.mine.bukkit.plugins.spells;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.util.Vector;
@@ -16,9 +17,10 @@ public class Target implements Comparable<Target>
     private Entity   entity;
     private Player   player;
     private Block    block;
-    private double   distance;
-    private double   angle;
-    private int      score;
+
+    private double   distance    = 100000;
+    private double   angle       = 10000;
+    private int      score       = 0;
     
     public Target(Player player, Block block)
     {
@@ -40,6 +42,8 @@ public class Target implements Comparable<Target>
         Vector playerLoc = new Vector(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ());
         
         Location targetLocation = getLocation();
+        if (targetLocation == null) return;
+        
         Vector targetLoc = new Vector(targetLocation.getBlockX(), targetLocation.getBlockY(), targetLocation.getBlockZ());
         Vector targetDirection = new Vector(targetLoc.getBlockX() - playerLoc.getBlockX(), targetLoc.getBlockY() - playerLoc.getBlockY(), targetLoc.getBlockZ() - playerLoc.getBlockZ());
         angle = targetDirection.angle(playerFacing);
@@ -54,15 +58,19 @@ public class Target implements Comparable<Target>
         // Favor targeting monsters, a bit
         if (entity instanceof Player)
         {
-            score = score + 1;
+            score = score + 5;
         }
         else if (entity instanceof Wolf)
         {
             score = score + 2;
         }
+        else  if (!(entity instanceof LivingEntity))
+        {
+            score = score + 4;
+        }
         else
         {
-            score = score + 5;
+            score = score + 1;
         }
     }
     

@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.11
+
+ - Re-enable fling spell - it works! YOU CAN FLY!
+ - Add force (+push), only works on living entities right now (for some reason)
+ - Turn back on tower + stairs, but give no one permission to use them
+ - Fix torch underwater
+ - Some tweaks to blink
+
 ## 1.10
 
  - Fill (recurse, etc) will target water now.
