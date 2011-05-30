@@ -36,6 +36,11 @@ public class Target implements Comparable<Target>
         calculateScore();
     }
     
+    public int getScore()
+    {
+        return score;
+    }
+    
     protected void calculateScore()
     {
         Vector playerFacing = player.getLocation().getDirection();

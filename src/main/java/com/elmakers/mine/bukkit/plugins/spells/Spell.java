@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -270,6 +271,11 @@ public abstract class Spell implements Comparable<Spell>
         ||    mat == Material.LONG_GRASS
 		);
 	}
+	
+	public boolean isWater(Material mat)
+	{
+	    return (mat == Material.WATER || mat == Material.STATIONARY_WATER);
+	}
 
 	public boolean isOkToStandOn(Material mat)
 	{
@@ -307,11 +313,13 @@ public abstract class Spell implements Comparable<Spell>
 				isOkToStandOn(block.getType())
 			&&	isOkToStandIn(blockOneUp.getType())
 			&& 	isOkToStandIn(blockTwoUp.getType())
+			&&   (!goUp || !isUnderwater() || !isWater(blockOneUp.getType())) // rise to surface of water
 			)
 			{
 				// spot found - return location
 				return new Location(world, (double) x + 0.5, (double) y + 1, (double) z + 0.5, playerLoc.getYaw(),
 						playerLoc.getPitch());
+		    
 			}
 			y += step;
 		}
@@ -545,7 +553,7 @@ public abstract class Spell implements Comparable<Spell>
 		findTargetBlock();
 		return getCurBlock();
 	}
-	
+
 	protected Target getTargetEntity()
 	{
 		List<Entity> entities = player.getWorld().getEntities();
@@ -556,7 +564,10 @@ public abstract class Spell implements Comparable<Spell>
 			if (targetEntityType != null && !(targetEntityType.isAssignableFrom(entity.getClass()))) continue;
 			
 			Target newScore = new Target(player, entity);
-			scored.add(newScore);
+			if (newScore.getScore() > 0)
+			{
+			    scored.add(newScore);
+			}
 		}
 		
 		if (scored.size() <= 0) return null;
@@ -845,7 +856,7 @@ public abstract class Spell implements Comparable<Spell>
 		playerLocation = player.getLocation();
 		length = 0;
 		targetHeightRequired = 1;
-		targetEntityType = null;
+		targetEntityType = LivingEntity.class;
 		xRotation = (playerLocation.getYaw() + 90) % 360;
 		yRotation = playerLocation.getPitch() * -1;
 		reverseTargeting = false;

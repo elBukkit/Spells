@@ -7,6 +7,9 @@
  - Turn back on tower + stairs, but give no one permission to use them
  - Fix torch underwater
  - Some tweaks to blink
+ - Randomize tree spell
+ - Fix wolf spell
+ - Fix gills spell
 
 ## 1.10
 

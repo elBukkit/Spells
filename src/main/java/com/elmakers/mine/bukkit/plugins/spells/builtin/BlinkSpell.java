@@ -108,7 +108,7 @@ public class BlinkSpell extends Spell
 		if (autoPassthrough)
 		{
 			Block firstBlock = getNextBlock();
-			if (firstBlock.getType() != Material.AIR)
+			if (firstBlock.getType() != Material.AIR && !isWater(firstBlock.getType()))
 			{
 				setReverseTargeting(true);
 				setTargetHeightRequired(2);

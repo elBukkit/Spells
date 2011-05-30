@@ -36,8 +36,7 @@ public class DisintegrateSpell extends Spell
 	            }
 	            else
 	            {
-	                li.damage(10);
-	                li.setHealth(0);
+	                li.damage(100);
 	            }
 	            castMessage(player, "ZOT!");
 	            return true;

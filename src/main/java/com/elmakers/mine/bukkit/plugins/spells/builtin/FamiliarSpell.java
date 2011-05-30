@@ -26,7 +26,14 @@ public class FamiliarSpell extends Spell
 	private List<String> defaultMonsters = new ArrayList<String>();
 	private final Random rand = new Random();
 	private HashMap<String, PlayerFamiliar> familiars = new HashMap<String, PlayerFamiliar>();
-	
+	   
+    public FamiliarSpell()
+    {
+        addVariant("monster", Material.PUMPKIN, "combat", "Call a monster to your side", "monster");
+        addVariant("mob", Material.JACK_O_LANTERN, "combat", "Call a monster to your side", "monster 20");
+        addVariant("farm", Material.WHEAT, "farming", "Create a herd", "30");
+    }
+    
 	public enum FamiliarClass
 	{
 	    SPECIFIC,
@@ -100,12 +107,6 @@ public class FamiliarSpell extends Spell
 		}
 		
 	};
-	
-	public FamiliarSpell()
-	{
-		addVariant("monster", Material.PUMPKIN, "combat", "Call a monster to your side", "monster");
-		addVariant("mob", Material.JACK_O_LANTERN, "combat", "Call a monster to your side", "monster 20");
-	}
 	
 	@Override
 	public boolean onCast(String[] parameters)

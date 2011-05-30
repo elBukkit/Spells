@@ -2,6 +2,7 @@ package com.elmakers.mine.bukkit.plugins.spells.builtin;
 
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
@@ -19,6 +20,7 @@ public class ForceSpell extends Spell
     @Override
     public boolean onCast(String[] parameters)
     {
+        targetEntity(Entity.class);
         Target target = getTargetEntity();
         if (!target.hasTarget())
         {

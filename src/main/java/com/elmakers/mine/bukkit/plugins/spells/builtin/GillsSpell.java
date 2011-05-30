@@ -12,7 +12,7 @@ import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 
 public class GillsSpell extends Spell
 {
-	class PlayerGills
+	public class PlayerGills
 	{
 		public long lastHealTick;
 		public long lastMoveTick;

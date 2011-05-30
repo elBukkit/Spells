@@ -10,7 +10,7 @@ import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 
 public class TreeSpell extends Spell
 {
-	private TreeType defaultTreeType = TreeType.TREE;
+	private TreeType defaultTreeType = null;
 	private boolean requireSapling = false;
 	
 	@Override
@@ -37,6 +37,10 @@ public class TreeSpell extends Spell
 			treeType = parseTreeString(parameters[0], defaultTreeType);
 		}
 		
+		if (treeType == null)
+		{
+		    treeType = TreeType.values()[(int)(Math.random() * TreeType.values().length)];
+		}
 		boolean result = player.getWorld().generateTree(treeLoc, treeType);
 		
 		if (result)
