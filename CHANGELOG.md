@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.12
+
+ - Add map spell (WIP! Very broken right now.)
+ - Add levitate spell
+ - Add ironskin + leatherskin, always show messages on invincible variants
+
 ## 1.11
 
  - Re-enable fling spell - it works! YOU CAN FLY!
@@ -10,6 +16,10 @@
  - Randomize tree spell
  - Fix wolf spell
  - Fix gills spell
+ - Add up/down push/pull all variants to "force"
+ - Don't ever remove a recall marker (no real reason to, and it's confusing)
+ - goto should only target Players, use "pull" for other entities
+ - rename "force" to "pull"
 
 ## 1.10
 

@@ -46,8 +46,10 @@ import com.elmakers.mine.bukkit.plugins.spells.builtin.GrenadeSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.HealSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.InvincibleSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.LavaSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.LevitateSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.LightningSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.ManifestSpell;
+import com.elmakers.mine.bukkit.plugins.spells.builtin.MapSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.MineSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.PeekSpell;
 import com.elmakers.mine.bukkit.plugins.spells.builtin.PillarSpell;
@@ -544,9 +546,19 @@ public class Spells
 	  
     public void onPlayerDamage(Player player, EntityDamageEvent event)
     {
-    	if (isInvincible(player))
+        Float amount = invincibleAmount(player);
+    	if (amount != null && amount > 0)
     	{
-    		event.setCancelled(true);
+    	    if (amount >= 1)
+    	    {
+    	        event.setCancelled(true);
+    	    }
+    	    else
+    	    {
+    	        int newDamage = (int)Math.floor((1.0f - amount) * event.getDamage());
+    	        if (newDamage == 0) newDamage = 1;
+    	        event.setDamage(newDamage);
+    	    }
     	}
     }
     
@@ -643,6 +655,8 @@ public class Spells
         addSpell(new FireballSpell());
         addSpell(new FlingSpell());
         addSpell(new ForceSpell());
+        addSpell(new MapSpell());
+        addSpell(new LevitateSpell());
         
 		// wip
 		addSpell(new TowerSpell());
@@ -650,20 +664,21 @@ public class Spells
 		addSpell(new StairsSpell());
 	}
 	
-	public boolean isInvincible(Player player)
+	public Float invincibleAmount(Player player)
 	{
-		Boolean isInvincible = invinciblePlayers.get(player.getName());
-		if (isInvincible == null)
-		{
-			return false;
-		}
-		
-		return isInvincible;
+		return invinciblePlayers.get(player.getName());
 	}
 	
-	public void setInvincible(Player player, boolean invincible)
+	public void setInvincible(Player player, float invincible)
 	{
-		invinciblePlayers.put(player.getName(), invincible);
+	    if (invincible <= 0)
+	    {
+	        invinciblePlayers.remove(player.getName());
+	    }
+	    else
+	    {
+	        invinciblePlayers.put(player.getName(), invincible);
+	    }
 	}
 	
 	public boolean allowPhysics(Block block)
@@ -714,7 +729,7 @@ public class Spells
 	private final List<Spell> materialListeners = new ArrayList<Spell>();
 	private final List<Spell> quitListeners = new ArrayList<Spell>();
 	private final List<Spell> deathListeners = new ArrayList<Spell>();
-	private final HashMap<String, Boolean> invinciblePlayers = new HashMap<String, Boolean>();
+	private final HashMap<String, Float> invinciblePlayers = new HashMap<String, Float>();
 
 	private SpellsPlugin plugin = null;
 	

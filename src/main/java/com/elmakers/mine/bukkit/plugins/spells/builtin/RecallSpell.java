@@ -82,18 +82,6 @@ public class RecallSpell extends Spell
 			return placeMarker(getTargetBlock());
 		}
 		
-		double distance = getDistance(player.getLocation(), marker.location);
-		
-		if (distance < disableDistance)
-		{
-			boolean removed = removeMarker(marker);
-			if (removed)
-			{
-				castMessage(player, "You dispell your marker");
-			}
-			return removed;
-		}
-		
 		return placeMarker(getTargetBlock());
 	}
 	

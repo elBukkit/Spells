@@ -15,6 +15,7 @@ public class GotoSpell extends Spell
     @Override
     public boolean onCast(String[] parameters)
     {
+        targetEntity(Player.class);
         boolean gather = false;
         Player targetPlayer = player;
         Target target = getTarget();
