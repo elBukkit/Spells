@@ -483,8 +483,12 @@ public abstract class Spell implements Comparable<Spell>
 	 */
 	public Vector getAimVector()
 	{
-		return new Vector((0 - Math.sin(Math.toRadians(playerLocation.getYaw()))), (0 - Math.sin(Math
-				.toRadians(playerLocation.getPitch()))), Math.cos(Math.toRadians(playerLocation.getYaw())));
+		return new Vector
+		(
+	        (0 - Math.sin(Math.toRadians(playerLocation.getYaw()))), 
+	        (0 - Math.sin(Math.toRadians(playerLocation.getPitch()))), 
+	        Math.cos(Math.toRadians(playerLocation.getYaw()))
+		);
 	}
 
 	

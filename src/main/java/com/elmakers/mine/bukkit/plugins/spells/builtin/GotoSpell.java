@@ -2,6 +2,7 @@ package com.elmakers.mine.bukkit.plugins.spells.builtin;
 
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -16,58 +17,69 @@ public class GotoSpell extends Spell
     public boolean onCast(String[] parameters)
     {
         targetEntity(Player.class);
-        boolean gather = false;
-        Player targetPlayer = player;
-        Target target = getTarget();
-        Entity targetEntity = target.getEntity();
-        if (targetEntity != null && targetEntity instanceof Player)
+        
+        if (getYRotation() > 80)
         {
-            targetPlayer = (Player)targetEntity;
-        }
-        else
-        {
-            if (getYRotation() > 80)
-            {
-                gather = true;
-            }
+            Player destination = getFarthestPlayer(player);
+            if (destination == null) return false;
+            player.teleport(destination);
+            castMessage(player, "Teleporting you to " + destination.getName());
+            return true;
         }
         
-        List<Player> players = targetPlayer.getWorld().getPlayers();
-        Player destination = null;
-        double destDistance = 0;
+        Target target = getTarget();
+        Entity targetEntity = target.getEntity();
+        
+        if (targetEntity != null && targetEntity instanceof Player)
+        {
+            Player targetPlayer = (Player)targetEntity;
+            Player destination = getFarthestPlayer(targetPlayer);
+            if (destination == null) return false;
+            targetPlayer.teleport(destination);
+            castMessage(player, "Teleporting " + targetPlayer.getName() + " to " + destination.getName());
+            return true;
+        }
+        
+        Location destination = player.getLocation();
+        if (target.isBlock())
+        {
+            destination = target.getLocation();
+        }
+        
+        Player targetPlayer = getFarthestPlayer(player);
+        if (targetPlayer == null) return false;
+        targetPlayer.teleport(destination);
+        castMessage(player, "Teleporting " + targetPlayer.getName() + " to your target");
+        
+        return true;
+    }
+    
+    protected Player getFarthestPlayer(Player fromPlayer)
+    {
+        Player destinationPlayer = null;
+        List<Player> players = fromPlayer.getLocation().getWorld().getPlayers();
+        double targetToDestinationDistance = 0;
         
         for (Player d : players)
         {
-            if (d != targetPlayer)
+            if (d != fromPlayer)
             {
-                double dd = getDistance(d.getLocation(), targetPlayer.getLocation());
-                if (destination == null || dd > destDistance)
+                double dd = getDistance(d.getLocation(), fromPlayer.getLocation());
+                if (destinationPlayer == null || dd > targetToDestinationDistance)
                 {
-                    destDistance = dd;
-                    destination = d;
+                    targetToDestinationDistance = dd;
+                    destinationPlayer = d;
                 }
             }
         }
-        if (destination == null)
-        {
-            return false;
-        }
         
-        if (gather)
-        {
-            targetPlayer = destination;
-            destination = player;
-        }
-        targetPlayer.teleport(destination);
-        castMessage(player, "Teleporting " + targetPlayer.getName() + " to " + destination.getName());
-        
-        return true;
+        return destinationPlayer;
     }
 
     @Override
     public String getName()
     {
-        return "goto";
+        return "gather";
     }
 
     @Override
@@ -79,7 +91,7 @@ public class GotoSpell extends Spell
     @Override
     public String getDescription()
     {
-        return "Send you to the farthest away player";
+        return "Gather groups of players together";
     }
 
     @Override

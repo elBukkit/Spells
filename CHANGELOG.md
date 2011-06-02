@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.13
+
+ - levitate improvements
+ - rename "goto" to "gather", change the way it works
+
 ## 1.12
 
  - Add map spell (WIP! Very broken right now.)
