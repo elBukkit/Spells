@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 1.16
+
+ - Add leap
+ - More levitate tweaks/changes
+
+## 1.15
+
+ - Add "erase" spell, a targeted version of "rewind"
+ - Tweak blob, make it more sphere-y
+ - Tweak levitate
+
+## 1.14
+
+ - Add "tag" spell, places a "You were here" sign at your target
+
 ## 1.13
 
  - levitate improvements

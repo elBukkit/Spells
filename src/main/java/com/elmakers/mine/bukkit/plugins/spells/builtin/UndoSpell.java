@@ -7,12 +7,41 @@ import com.elmakers.mine.bukkit.plugins.spells.Spell;
 
 public class UndoSpell extends Spell
 {
+    public UndoSpell()
+    {
+        addVariant("erase", Material.LEVER, getCategory(), "Undo your target construction", "target");
+    }
+    
 	@Override
 	public boolean onCast(String[] parameters)
 	{
 		for (int i = 0; i < parameters.length; i++)
 		{
-			if (parameters[i].equalsIgnoreCase("player") && i < parameters.length - 1)
+		    if (parameters[i].equalsIgnoreCase("target"))
+		    {
+		        targetThrough(Material.GLASS);
+	            Block target = getTargetBlock();
+	            if (target != null)
+	            {
+	                boolean undone = false;
+	                if (player.isOp())
+	                {
+	                    undone = spells.undoAny(player, target);
+	                }
+	                else
+	                {
+	                    undone = spells.undo(player.getName(), target);
+                    }
+                    
+	                if (undone)
+	                {
+	                    castMessage(player, "You revert your construction");
+	                    return true;
+	                }
+	            }
+	            return false;
+		    }
+		    else if (parameters[i].equalsIgnoreCase("player") && i < parameters.length - 1)
 			{
 				String undoPlayer = parameters[++i];
 				boolean undone = spells.undo(undoPlayer);
@@ -25,21 +54,6 @@ public class UndoSpell extends Spell
 					castMessage(player, "There is nothing to undo for " + undoPlayer);
 				}
 				return undone;
-			}
-		}
-		
-		/*
-		 * Use target if targeting
-		 */
-		targetThrough(Material.GLASS);
-		Block target = getTargetBlock();
-		if (target != null)
-		{
-			boolean undone = spells.undo(player.getName(), target);
-			if (undone)
-			{
-				castMessage(player, "You revert your construction");
-				return true;
 			}
 		}
 		

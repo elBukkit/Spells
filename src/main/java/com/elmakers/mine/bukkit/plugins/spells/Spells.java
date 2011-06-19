@@ -292,6 +292,24 @@ public class Spells
 		queue.add(blocks);
 	}
 	
+	public boolean undoAny(Player player, Block target)
+	{
+	    for (String playerName : playerUndoQueues.keySet())
+	    {
+	        UndoQueue queue = playerUndoQueues.get(playerName);
+	        if (queue.undo(target))
+	        {
+	            if (!player.getName().equals(playerName))
+	            {
+	                player.sendMessage("Undid one of " + playerName +"'s spells");
+	            }
+	            return true;
+	        }
+	    }
+	    
+	    return false;
+	}
+	
 	public boolean undo(String playerName)
 	{
 		UndoQueue queue = getUndoQueue(playerName);

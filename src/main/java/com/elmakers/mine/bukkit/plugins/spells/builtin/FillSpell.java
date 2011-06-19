@@ -14,8 +14,8 @@ import com.elmakers.mine.bukkit.utilities.ReplaceMaterialAction;
 
 public class FillSpell extends Spell 
 {
-	private int maxDimension = 128;
-	private int maxVolume = 512;
+	private int defaultMaxDimension = 128;
+	private int defaultMaxVolume = 512;
 	private final HashMap<String, Block> playerTargets = new HashMap<String, Block>();
 	private final BlockRecurse blockRecurse = new BlockRecurse();
 	
@@ -107,6 +107,9 @@ public class FillSpell extends Spell
 			int absx = Math.abs(deltax);
 			int absy = Math.abs(deltay);
 			int absz = Math.abs(deltaz);
+			
+			int maxDimension = player.isOp() ? defaultMaxDimension * 10 : defaultMaxDimension;
+			int maxVolume = player.isOp() ? defaultMaxVolume * 10 : defaultMaxVolume;
 		
 			if (maxDimension > 0 && (absx > maxDimension || absy > maxDimension || absz > maxDimension))
 			{
@@ -207,8 +210,8 @@ public class FillSpell extends Spell
 	@Override
 	public void onLoad(PluginProperties properties)
 	{
-		maxDimension = properties.getInteger("spells-fill-max-dimension", maxDimension);
-		maxVolume = properties.getInteger("spells-fill-max-volume", maxVolume);
+		defaultMaxDimension = properties.getInteger("spells-fill-max-dimension", defaultMaxDimension);
+		defaultMaxVolume = properties.getInteger("spells-fill-max-volume", defaultMaxVolume);
 	}
 
 	@Override

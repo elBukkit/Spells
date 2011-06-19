@@ -10,6 +10,11 @@ public class FlingSpell extends Spell
 {
 	private final int defaultMagnitude = 5;
 
+   public FlingSpell()
+    {
+        addVariant("leap", Material.LEATHER_BOOTS, getCategory(), "Take a big leap", "2");
+    }
+    
 	@Override
 	public boolean onCast(String[] parameters)
 	{
@@ -26,6 +31,7 @@ public class FlingSpell extends Spell
             }
         }
 		Vector velocity = getAimVector();
+		velocity.normalize();
 		velocity.multiply(magnitude);
 		CraftPlayer craftPlayer = (CraftPlayer)player;
 		craftPlayer.setVelocity(velocity);
@@ -54,7 +60,7 @@ public class FlingSpell extends Spell
 	@Override
 	public Material getMaterial()
 	{
-		return Material.LEATHER_BOOTS;
+		return Material.IRON_BOOTS;
 	}
 
 }

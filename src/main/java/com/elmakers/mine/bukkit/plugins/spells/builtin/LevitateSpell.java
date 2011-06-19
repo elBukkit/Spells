@@ -3,6 +3,7 @@ package com.elmakers.mine.bukkit.plugins.spells.builtin;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,7 +20,7 @@ import com.elmakers.mine.bukkit.plugins.spells.Spell;
 
 public class LevitateSpell extends Spell
 {
-    public static int tickSpan = 2; // How often velocity is applied
+    public static int tickSpan = 2; // How often velocity is applied, in scheduler ticks
     
     public class LevitatingPlayer
     {
@@ -36,14 +37,15 @@ public class LevitateSpell extends Spell
         protected int defaultHoverHeight = 5;
         protected int elevateRate = 32; // In blocks /s / s, at max speed 
         protected int maxSpeedAtElevation = 32;
-        protected int maxSpeed = 24; // In blocks /s / s, at max speed and elevation
-        protected int minSpeed = 8; // In blocks /s / s, at max speed and elevation
+        protected int maxSpeed = 20; // In blocks /s / s, at max speed and elevation
+        protected int minSpeed = 6; // In blocks /s / s, at max speed and elevation
         
         protected float gravity = 0.98f; // anti-gravity force, in velocity/s (?)
         
         public LevitatingPlayer(Player player)
         {
             this.player = player;
+            lastTick = System.currentTimeMillis();
         }
 
         protected void checkForGround()
@@ -129,6 +131,9 @@ public class LevitateSpell extends Spell
                 scaledForce.setY(0);
             }
             
+            // Trying out a suggestion, in a hacky way- adjust pitch so that "level" is really looking down a bit
+            pitch += 15;
+            
             // Adjust target height based on aim
             Vector aim = new Vector
             (
@@ -167,6 +172,7 @@ public class LevitateSpell extends Spell
             aim.setY(0);
             scaledForce.add(aim);
         
+            //Logger.getLogger("Minecraft").info("Applying force: (" + scaledForce.getX() + ", " + scaledForce.getY() + ", "+ scaledForce.getZ() + ")");
             player.setVelocity(scaledForce);
             
             this.lastTick = System.currentTimeMillis();

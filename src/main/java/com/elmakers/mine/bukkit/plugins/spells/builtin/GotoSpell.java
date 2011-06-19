@@ -44,6 +44,7 @@ public class GotoSpell extends Spell
         if (target.isBlock())
         {
             destination = target.getLocation();
+            destination.setY(destination.getY() + 1);
         }
         
         Player targetPlayer = getFarthestPlayer(player);

@@ -156,6 +156,7 @@ public class ConstructSpell extends Spell
 		int midY = (diameter - 1) / 2;
 		int midZ = (diameter - 1) / 2;
 		int diameterOffset = diameter - 1;
+		int radiusSquared = (radius - 1) * (radius - 1);
 
 		for (int x = 0; x < radius; ++x)
 		{
@@ -167,11 +168,11 @@ public class ConstructSpell extends Spell
 					
 					if (sphere)
 					{
-						int distance = getDistance(x - midX, y - midY, z - midZ);
-						fillBlock = distance <= radius;
+						int distanceSquared = getDistanceSquared(x - midX, y - midY, z - midZ);
+						fillBlock = distanceSquared <= radiusSquared;
 						if (!fill)
 						{
-							fillBlock = fillBlock && distance >= radius - 1;
+							fillBlock = fillBlock && distanceSquared >= radiusSquared - 1;
 						}
 					}
 					else
@@ -197,9 +198,9 @@ public class ConstructSpell extends Spell
 		castMessage(player, "Constructed " + constructedBlocks.size() + "blocks");
 	}
 	
-	public int getDistance(int x, int y, int z)
+	public int getDistanceSquared(int x, int y, int z)
 	{
-		return (int)(Math.sqrt(x * x + y * y + z * z) + 0.5);
+		return x * x + y * y + z * z;
 	}
 
 	public void constructBlock(int dx, int dy, int dz, Block centerPoint, int radius, Material material, byte data, BlockList constructedBlocks)
