@@ -20,6 +20,7 @@ public class BoomSpell extends Spell {
 
 	public BoomSpell()
 	{
+	    setCooldown(5000);
 		addVariant("kaboom", Material.REDSTONE_WIRE, getCategory(), "Create a big explosion", "6");
 		addVariant("nuke", Material.BED, getCategory(), "Create a huge explosion", "20");
 	}

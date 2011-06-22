@@ -13,8 +13,13 @@ import org.bukkit.util.Vector;
 
 import com.elmakers.mine.bukkit.plugins.spells.Spell;
 
-public class FireballSpell extends Spell {
-
+public class FireballSpell extends Spell 
+{
+    public FireballSpell()
+    {
+        setCooldown(1500);
+    }
+    
 	@Override
 	public boolean onCast(String[] parameters) 
 	{

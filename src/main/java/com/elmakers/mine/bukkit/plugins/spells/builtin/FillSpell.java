@@ -21,6 +21,7 @@ public class FillSpell extends Spell
 	
 	public FillSpell()
 	{
+	    setCooldown(250);
 		addVariant("paint", Material.PAINTING, getCategory(), "Fill a single block", "single");
 		addVariant("recurse", Material.WOOD_SPADE, getCategory(), "Recursively fill blocks", "recurse");
 	}
@@ -77,7 +78,26 @@ public class FillSpell extends Spell
 	
 		if (recurse)
 		{
+		    Material targetMaterial = targetBlock.getType();
 			ReplaceMaterialAction action = new ReplaceMaterialAction(targetBlock, material, data);
+			
+			// A bit hacky, but is very handy!
+			if (targetMaterial == Material.STATIONARY_WATER)
+			{
+			    action.addReplaceable(Material.WATER);
+			}
+			else if (targetMaterial == Material.WATER)
+            {
+                action.addReplaceable(Material.STATIONARY_WATER);
+            }
+			else if (targetMaterial == Material.STATIONARY_LAVA)
+            {
+                action.addReplaceable(Material.LAVA);
+            }
+            else if (targetMaterial == Material.LAVA)
+            {
+                action.addReplaceable(Material.STATIONARY_LAVA);
+            }
 			blockRecurse.recurse(targetBlock, action);
 			spells.addToUndoQueue(player, action.getBlocks());
 			castMessage(player, "Filled " + action.getBlocks().size() + " blocks with " + material.name().toLowerCase());	

@@ -13,6 +13,11 @@ import com.elmakers.mine.bukkit.plugins.spells.Spell;
 
 public class GrenadeSpell extends Spell
 {
+    public GrenadeSpell()
+    {
+       setCooldown(2000);
+    }
+    
     @Override
     public String getDescription()
     {

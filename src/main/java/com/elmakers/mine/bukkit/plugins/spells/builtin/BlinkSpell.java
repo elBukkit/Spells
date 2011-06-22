@@ -21,6 +21,7 @@ public class BlinkSpell extends Spell
 	{
 		addVariant("ascend", Material.RED_MUSHROOM, getCategory(), "Go up to the nearest safe spot", "ascend");
 		addVariant("descend", Material.BROWN_MUSHROOM, getCategory(), "Travel underground", "descend");
+		addVariant("tesseract", Material.WEB, getCategory(), "Blink a short distance", "8");
 	}
 	
 	public String getName()
@@ -60,6 +61,8 @@ public class BlinkSpell extends Spell
 	@Override
 	public boolean onCast(String[] parameters)
 	{
+	    setMaxRange(255, false);
+	    
 		if (parameters.length > 0)
 		{
 			if (parameters[0].equalsIgnoreCase("ascend"))
@@ -82,7 +85,15 @@ public class BlinkSpell extends Spell
 				return true;
 			}
 			
-			return false;
+			try
+			{
+			    int range = Integer.parseInt(parameters[0]);
+			    setMaxRange(range, true);
+			}
+			catch (NumberFormatException ex)
+			{
+			    return false;
+			}
 		}
 		
 		// No parameters

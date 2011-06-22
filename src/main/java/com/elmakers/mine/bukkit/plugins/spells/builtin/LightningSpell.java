@@ -15,6 +15,7 @@ public class LightningSpell extends Spell
     
     public LightningSpell()
     {
+        setCooldown(2000);
         addVariant("storm", Material.GRILLED_PORK, getCategory(), "Start a lightning storm", "10");
     }
     

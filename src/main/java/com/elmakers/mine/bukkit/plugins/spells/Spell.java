@@ -830,6 +830,14 @@ public abstract class Spell implements Comparable<Spell>
 	public boolean cast(String[] parameters, Player player)
 	{
 		this.player = player;
+		
+		long currentTime = System.currentTimeMillis();
+		if (lastCast != 0 && lastCast > currentTime - cooldown)
+		{
+		    return false;
+		}
+		
+		lastCast = currentTime;
 
 		targetThrough(Material.AIR);
 		targetThrough(Material.WATER);
@@ -881,7 +889,7 @@ public abstract class Spell implements Comparable<Spell>
 			return;
 		}
 
-		while (getNextBlock() != null)
+		while (getNextBlock() != null && length <= range)
 		{
 			Block block = getCurBlock();
 			if (isTargetable(block.getType()))
@@ -1032,6 +1040,11 @@ public abstract class Spell implements Comparable<Spell>
             }
         }
     }
+    
+    protected void setCooldown(int ms)
+    {
+        cooldown = ms;
+    }
 	
 	/*
 	 * private data
@@ -1041,6 +1054,9 @@ public abstract class Spell implements Comparable<Spell>
 	private int									range					= 200;
 	private double								viewHeight				= 1.65;
 	private double								step					= 0.2;
+	
+	private int                                 cooldown                = 0;
+	private long                                lastCast                = 0;
 
 	private int                                 verticalSearchDistance  = 8;
 	private boolean								targetingComplete;

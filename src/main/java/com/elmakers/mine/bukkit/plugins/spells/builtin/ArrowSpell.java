@@ -13,7 +13,7 @@ public class ArrowSpell extends Spell
 {
     public ArrowSpell()
     {
-        addVariant("arrowrain", Material.BOW, getCategory(), "Fire a volley of arrows", "20");
+        addVariant("arrowrain", Material.BOW, getCategory(), "Fire a volley of arrows", "4");
     }
     
 	@Override

@@ -18,6 +18,7 @@ public class ForceSpell extends Spell
     
     public ForceSpell()
     {
+        setCooldown(500);
         addVariant("push", Material.RAILS, getCategory(), "Push things away from you", "push");
     }
     

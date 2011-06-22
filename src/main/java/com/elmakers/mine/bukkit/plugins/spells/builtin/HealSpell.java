@@ -9,6 +9,11 @@ import com.elmakers.mine.bukkit.plugins.spells.Target;
 
 public class HealSpell extends Spell 
 {
+    public HealSpell()
+    {
+        setCooldown(5000);
+    }
+    
 	@Override
 	public boolean onCast(String[] parameters) 
 	{
