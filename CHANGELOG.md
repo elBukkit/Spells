@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.17
+
+ - Arrows shot with the arrow spell can't be picked up
+ - Modify portal so that it creates two instant-travel connected portals
+ - monster now spawns actual monsters (use /familiar mob for random evil mobs)
+ - familiar targets entities, makes spawned creature attack target
+
 ## 1.16
 
  - Add leap

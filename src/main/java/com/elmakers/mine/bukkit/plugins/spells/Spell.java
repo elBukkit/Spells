@@ -328,7 +328,7 @@ public abstract class Spell implements Comparable<Spell>
 		return null;
 	}
 	
-	public double getDistance(Location source, Location target)
+	public static double getDistance(Location source, Location target)
 	{
 		return Math.sqrt
 		(
@@ -338,7 +338,7 @@ public abstract class Spell implements Comparable<Spell>
 		);
 	}
 	
-	public double getDistance(Player player, Block target)
+	public static double getDistance(Player player, Block target)
 	{
 		Location loc = player.getLocation();
 		return Math.sqrt
