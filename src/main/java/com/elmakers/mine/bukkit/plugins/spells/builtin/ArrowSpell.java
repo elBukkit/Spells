@@ -41,16 +41,27 @@ public class ArrowSpell extends Spell
 		        sendMessage(player, "One of your arrows fizzled");
 		        return false;
 		    }
-		    if (ai != 0 && (arrow instanceof CraftArrow))
+		    if (arrow instanceof CraftArrow)
 		    {
-		        CraftArrow ca = (CraftArrow)arrow;
-		        EntityArrow ea = (EntityArrow)ca.getHandle();
-		        ea.setPosition
-		        (
-	                ea.locX + Math.random() * arrowCount - arrowCount / 2,
-	                ea.locY + Math.random() * arrowCount - arrowCount / 2,
-	                ea.locZ + Math.random() * arrowCount - arrowCount / 2
-		        );	                
+                CraftArrow ca = (CraftArrow)arrow;
+                EntityArrow ea = (EntityArrow)ca.getHandle();
+                
+                // Make it so this arrow can't be picked up
+                ea.a = false;
+                
+                // Make it so it disappears very quickly after sticking
+                // ... inaccessible! >:(
+                // ea.j = 1150;
+                
+    		    if (ai != 0)
+    		    {
+    		        ea.setPosition
+    		        (
+    	                ea.locX + Math.random() * arrowCount - arrowCount / 2,
+    	                ea.locY + Math.random() * arrowCount - arrowCount / 2,
+    	                ea.locZ + Math.random() * arrowCount - arrowCount / 2
+    		        );
+    		    }
 		    }
 		}
 	
