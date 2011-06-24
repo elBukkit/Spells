@@ -32,7 +32,6 @@ public class FamiliarSpell extends Spell
 	   
     public FamiliarSpell()
     {
-        setCooldown(5000);
         addVariant("monster", Material.PUMPKIN, "combat", "Call a monster to your side", "monster");
         addVariant("mob", Material.JACK_O_LANTERN, "combat", "Call a monster to your side", "mob 20");
         addVariant("farm", Material.WHEAT, "farming", "Create a herd", "30");
@@ -71,6 +70,18 @@ public class FamiliarSpell extends Spell
 				familiars = null;
 			}
 		}
+		
+		public boolean isFamiliar(Entity e)
+		{
+		    if (familiars == null) return false;
+		    
+		    for (Creature c : familiars)
+		    {
+		        if (c.getEntityId() == e.getEntityId()) return true;
+		    }
+		    
+		    return false;
+		}
 	}
 	
 	@Override
@@ -81,7 +92,7 @@ public class FamiliarSpell extends Spell
 		
 		targetEntity(LivingEntity.class);
 		Target target = getTarget();
-		if (target == null)
+		if (target == null || !target.hasTarget())
 		{
 			castMessage(player, "No target");
 			return false;
@@ -92,27 +103,27 @@ public class FamiliarSpell extends Spell
        
 		PlayerFamiliar fam = getFamiliar(player.getName());	
 		boolean hasFamiliar = fam.hasFamiliar();
+		
     	if (hasFamiliar)
-        {
-    	    fam.releaseFamiliar();
+        {   // Dispel familiars if you target them and cast
+    	    boolean isFamiliar = target.isEntity() && fam.isFamiliar(target.getEntity());
+            fam.releaseFamiliar();
+            if (isFamiliar)
+            {
+                castMessage(player, "You release your familiar(s)");
+                checkListener();
+                return true;
+            }
         }
 		if (target.isEntity())
 		{
+		    
 		    targetBlock = targetBlock.getFace(BlockFace.SOUTH);
 		    Entity e = target.getEntity();
 		    if (e instanceof LivingEntity)
 		    {
 		        targetEntity = (LivingEntity)e;
 		    }
-		}
-		else
-		{
-	       if (hasFamiliar)
-	       {
-	            castMessage(player, "You release your familiar(s)");
-	            checkListener();
-	            return true;
-	       }
 		}
 		
 		CreatureType famType = CreatureType.PIG;

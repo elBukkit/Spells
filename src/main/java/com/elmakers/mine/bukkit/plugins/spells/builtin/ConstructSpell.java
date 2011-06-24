@@ -23,7 +23,6 @@ public class ConstructSpell extends Spell
     
 	public ConstructSpell()
 	{
-	    setCooldown(1000);
 		addVariant("shell", Material.BOWL, getCategory(), "Create a large spherical shell", "sphere hollow 10");
 		addVariant("box", Material.WOODEN_DOOR, getCategory(), "Create a large box", "cuboid hollow 6");
 		addVariant("superblob", Material.CLAY_BRICK, getCategory(), "Create a large solid sphere", "sphere 8");

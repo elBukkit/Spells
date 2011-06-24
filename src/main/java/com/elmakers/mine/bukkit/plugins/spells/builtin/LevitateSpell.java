@@ -3,8 +3,6 @@ package com.elmakers.mine.bukkit.plugins.spells.builtin;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;

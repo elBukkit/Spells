@@ -14,7 +14,12 @@ import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 public class DisintegrateSpell extends Spell
 {
 	private int				defaultSearchDistance	= 32;
-
+	
+	public DisintegrateSpell()
+    {
+	    setCooldown(5000);
+    }
+	
 	@Override
 	public boolean onCast(String[] parameters)
 	{

@@ -22,7 +22,6 @@ public class BlastSpell extends Spell
 
 	public BlastSpell()
 	{
-	    setCooldown(750);
 	    addVariant("superblast", Material.SLIME_BALL, getCategory(), "Mine out a very large area", "16");
 	}
 	

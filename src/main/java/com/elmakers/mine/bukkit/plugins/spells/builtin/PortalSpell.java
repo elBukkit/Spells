@@ -97,9 +97,9 @@ public class PortalSpell extends Spell
             Location destination = new Location
             (
                     targetLocation.getWorld(),
-                    playerLocation.getX() - base.getX() + targetLocation.getX(),
-                    playerLocation.getY() - base.getY() + targetLocation.getY(),
-                    playerLocation.getZ() - base.getZ() + targetLocation.getZ(),
+                    targetLocation.getX(),
+                    targetLocation.getY() + 1,
+                    targetLocation.getZ(),
                     playerLocation.getYaw(),
                     playerLocation.getPitch()
             );
@@ -239,7 +239,7 @@ public class PortalSpell extends Spell
 		}
 		
 		blockType = portalBase.getType();
-		if (blockType != Material.AIR)
+		if (blockType != Material.AIR && blockType != Material.SNOW)
 		{
 			castMessage(player, "Can't create a portal there");
 			return false;		

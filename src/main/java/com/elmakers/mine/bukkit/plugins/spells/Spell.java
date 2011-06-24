@@ -626,7 +626,7 @@ public abstract class Spell implements Comparable<Spell>
 		}
 		while ((length <= range) && ((targetX == lastX) && (targetY == lastY) && (targetZ == lastZ)));
 
-		if (length > range)
+		if (length > range || targetY > 127)
 		{
 			if (allowMaxRange)
 			{
@@ -1032,7 +1032,8 @@ public abstract class Spell implements Comparable<Spell>
                         block = block.getFace(BlockFace.DOWN);
                     }
 
-                    if (block.getType() != Material.AIR)
+                    Block coveringBlock = block.getFace(BlockFace.UP);
+                    if (block.getType() != Material.AIR && coveringBlock.getType() == Material.AIR)
                     {
                         action.perform(block);
                     }  
