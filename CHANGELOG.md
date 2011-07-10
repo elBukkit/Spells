@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.18
+
+- Update for 1.7 and RB#953
+
 ## 1.17
 
  - Arrows shot with the arrow spell can't be picked up

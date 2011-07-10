@@ -12,7 +12,7 @@ import com.elmakers.mine.bukkit.plugins.spells.utilities.PluginProperties;
 
 public class BlastSpell extends Spell
 {
-	static final String		DEFAULT_DESTRUCTIBLES	= "1,2,3,10,11,12,13,87,88";
+	static final String		DEFAULT_DESTRUCTIBLES	= "1,2,3,4,10,11,12,13,87,88";
 
 	private List<Material>	destructibleMaterials	= new ArrayList<Material>();
 	private int				defaultRadius			= 4;
